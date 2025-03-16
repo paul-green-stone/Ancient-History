@@ -3,7 +3,7 @@ CFLAGS :=
 BUILD ?= DEBUG
 LDFLAGS := `pkg-config --libs --cflags sdl2 SDL2_image SDL2_ttf` -lm
 INCLUDE := -I./framework/include/ -I./include/
-C_FILES := ./src/*.c ./framework/source/*.c ./framework/source/*/*.c
+C_FILES := ./src/*.c ./framework/source/*.c ./framework/source/*/*.c ./src/*/*.c
 
 ifeq ($(BUILD), RELEASE)
 	CFLAGS += -O2
