@@ -18,6 +18,9 @@ struct entity {
     int width;                      /* Entity's width */
     int height;                     /* Entity's height */
 
+    int level_x;                    /* X position */
+    int level_y;                    /* Y position */
+
     int lives;                      /* Describes how much damage an entity can withstand */
 
     Texture* texture;               /* Texture associated with the entity */

@@ -5,8 +5,11 @@
 #define HEIGHT (224) /* NES Height resolution */
 #define SCALE (3)    /* Scale factor for screen */
 
-const int SCREEN_WIDTH = WIDTH * SCALE;
-const int SCREEN_HEIGHT = HEIGHT * SCALE;
+// const int SCREEN_WIDTH = WIDTH * SCALE;
+// const int SCREEN_HEIGHT = HEIGHT * SCALE;
+
+#define SCREEN_WIDTH WIDTH * SCALE
+#define SCREEN_HEIGHT HEIGHT * SCALE
 
 #define FPS (60) /* FPS of the game */
 

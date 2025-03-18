@@ -30,7 +30,7 @@ const void* Player = &_Player;
 /* ======================== IMPLEMENTATION ======================== */
 /* ================================================================ */
 
-void Player_handle(void* player, float delta_time) {
+void Player_handle(void* player) {
 
     Vector2D* player_pos = Entity_get_position(player);
 
