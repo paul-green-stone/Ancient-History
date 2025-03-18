@@ -98,6 +98,35 @@ static SDL_Color getRGBFromSurface(SDL_Surface *s, int x, int y)
     };
 }
 
+static NESTile getTileFromSurface(SDL_Surface *s, int x, int y)
+{
+    NESTile tile;
+    memset(tile.pixels, 0, sizeof(uint8_t) * 16);
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            int px = x * 8 + j;
+            int py = y * 8 + i;
+            SDL_Color color = getRGBFromSurface(s, px, py);
+            if (color.r)
+            {
+                tile.pixels[i * 2 + j / 4] |= (uint8_t)1 << (6 - ((j % 4) * 2));
+            }
+            else if (color.g)
+            {
+                tile.pixels[i * 2 + j / 4] |= (uint8_t)2 << (6 - ((j % 4) * 2));
+            }
+            else if (color.b)
+            {
+                tile.pixels[i * 2 + j / 4] |= (uint8_t)3 << (6 - ((j % 4) * 2));
+            }
+        }
+    }
+
+    return tile;
+}
+
 void loadBackgroundPatternTable(const char *file)
 {
     SDL_Surface *surface = IMG_Load(file);
@@ -109,30 +138,27 @@ void loadBackgroundPatternTable(const char *file)
     {
         for (int w = 0; w < 16; w++)
         {
-            NESTile tile;
-            memset(tile.pixels, 0, sizeof(uint8_t) * 16);
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    int px = w * 8 + j;
-                    int py = h * 8 + i;
-                    SDL_Color color = getRGBFromSurface(rgb_surface, px, py);
-                    if (color.r)
-                    {
-                        tile.pixels[i * 2 + j / 4] |= (uint8_t)1 << (6 - ((j % 4) * 2));
-                    }
-                    else if (color.g)
-                    {
-                        tile.pixels[i * 2 + j / 4] |= (uint8_t)2 << (6 - ((j % 4) * 2));
-                    }
-                    else if (color.b)
-                    {
-                        tile.pixels[i * 2 + j / 4] |= (uint8_t)3 << (6 - ((j % 4) * 2));
-                    }
-                }
-            }
-            _background_pattern_table[w + h * 16] = tile;
+            _background_pattern_table[w + h * 16] = getTileFromSurface(rgb_surface, w, h);
+        }
+    }
+
+    SDL_UnlockSurface(rgb_surface);
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(rgb_surface);
+}
+
+void loadForegroundPatternTable(const char *file)
+{
+    SDL_Surface *surface = IMG_Load(file);
+    SDL_Surface *rgb_surface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGB888, 0);
+
+    SDL_LockSurface(rgb_surface);
+
+    for (int h = 0; h < 16; h++)
+    {
+        for (int w = 0; w < 16; w++)
+        {
+            _foreground_pattern_table[w + h * 16] = getTileFromSurface(rgb_surface, w, h);
         }
     }
 
