@@ -29,9 +29,6 @@ $(OUT) : $(OBJECTS)
 $(OBJECTS) : %.o : %.c
 	gcc -o $@ -c $< $(INCLUDE) $(LDFLAGS)
 
-test:
-	echo $(OBJECTS)
-
 .PHONY: clean
 clean:
 	rm -f $(OUT) ./*.o ./*/*.o ./*/*/*.o
