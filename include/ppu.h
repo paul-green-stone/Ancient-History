@@ -12,26 +12,6 @@
 extern uint32_t PALETTE[64];
 
 /**
- * BACKGROUND COLOR PALETTE
- *
- * C0: 0x0E 0x20 0x21 0x22
- * C1: 0x0E 0x19 0xA0 0x22
- * C2: 0x0E 0x20 0x21 0x22
- * C3: 0x0E 0x20 0x21 0x22
- */
-
-/**
- * 00 00 10 10 10 10 00 00
- * 00 10 10 10 10 10 10 00
- * 00 00 01 01 01 01 00 00
- * 00 00 01 11 01 11 00 00
- * 00 00 01 01 01 01 00 00
- * 00 00 01 01 01 01 00 00
- * 00 00 01 00 00 01 00 00
- * 00 00 01 00 00 01 00 00
- */
-
-/**
  * NES palette structure
  */
 typedef struct NESPalette
@@ -45,20 +25,66 @@ typedef struct NESPalette
 /**
  * Struct representing a single NES tile/background/sprite from the PPU
  */
-typedef struct NESSprite
+typedef struct NESTile
 {
     uint8_t pixels[16]; /* Pixel array containing the sprite */
+} NESTile;
+
+/**
+ * Sprite attribute field for OAM.
+ */
+typedef struct OAMAttr
+{
+    uint8_t palette : 2; // Foregorund palette to use
+    uint8_t flip_h : 1;  // If 1, flip horizontally
+    uint8_t flip_v : 1;  // If 1, flip vertically
+    uint8_t _ : 4;       // Unused
+} OAMAttr;
+
+/**
+ * Representation of NES sprites in OAM
+ */
+typedef struct NESSprite
+{
+    uint8_t tile; // Index of the tile from the pattern table
+    OAMAttr attr; // Attributes of the tile
+    uint8_t x;    // x position on screen
+    uint8_t y;    // y position on screen
 } NESSprite;
 
 /**
  * Color palette attribute table for the nametables.
  */
-extern uint8_t _ppu_attribute_table[256];
+extern uint8_t _ppu_attribute_table[128];
+
+extern NESTile _background_pattern_table[256];
+extern NESTile _foreground_pattern_table[256];
+
+/**
+ * Memory for the nametables, exactly 2KB
+ */
+extern uint8_t nametables[2048];
+
+/**
+ * OAM memory table for sprites
+ */
+extern NESSprite oam[64];
 
 /* Background color palette */
 extern NESPalette _background_palette[4];
 /* Foreground color palette */
 extern NESPalette _foreground_palette[4];
+
+/**
+ * Convert NES palette index to SDL_Color
+ */
+SDL_Color getColorFromPalette(uint8_t palette_no);
+
+/** Load the background pattern table */
+void loadBackgroundPatternTable(const char *file);
+
+/** Load the foreground pattern table */
+void loadForegroundPatternTable(const char *file);
 
 /**
  * Set the background color palette

@@ -8,20 +8,12 @@
 
 #include <fps.h>
 
-void drawBackgroundTile(SDL_Renderer *r, NESPalette palette, NESSprite tile, uint8_t x, uint8_t y)
+void drawBackgroundTile(SDL_Renderer *r, NESPalette palette, NESTile tile, uint8_t x, uint8_t y)
 {
-    SDL_Color color1 = {.r = PALETTE[palette.c1] >> 16,
-                        .g = (PALETTE[palette.c1] >> 8) & 0xFF,
-                        .b = PALETTE[palette.c1] & 0xFF,
-                        .a = 255};
-    SDL_Color color2 = {.r = PALETTE[palette.c2] >> 16,
-                        .g = (PALETTE[palette.c2] >> 8) & 0xFF,
-                        .b = PALETTE[palette.c2] & 0xFF,
-                        .a = 255};
-    SDL_Color color3 = {.r = PALETTE[palette.c3] >> 16,
-                        .g = (PALETTE[palette.c3] >> 8) & 0xFF,
-                        .b = PALETTE[palette.c3] & 0xFF,
-                        .a = 255};
+    SDL_Color color1 = getColorFromPalette(palette.c1);
+    SDL_Color color2 = getColorFromPalette(palette.c2);
+    SDL_Color color3 = getColorFromPalette(palette.c3);
+
     SDL_Color colors[] = {
         (SDL_Color){0, 0, 0, 0}, color1, color2, color3};
 
@@ -45,24 +37,16 @@ extern "C"
     main(int argc, char **argv)
 {
 
-    NESSprite tile = {
-        .pixels = {
-            0b00001010,
-            0b10100000,
-            0b00101010,
-            0b10100000,
-            0b00000101,
-            0b01010000,
-            0b00000111,
-            0b01110000,
-            0}};
+    loadBackgroundPatternTable("./assets/background pattern table.png");
 
     NESPalette palette = {.c0 = 0x0E, .c1 = 0x20, .c2 = 0x21, .c3 = 0x22};
 
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize all subsystems
+
     Window *window = Window_new("Ancient History", SCREEN_WIDTH, SCREEN_HEIGHT,
                                 0, SDL_RENDERER_ACCELERATED);
     SDL_Renderer *context = Window_get_context(window);
+    SDL_SetRenderDrawBlendMode(context, SDL_BLENDMODE_ADD);
 
     /* Create the NES screen canvas for drawing to */
     RenderTexture screen = RenderTexture_new(context, WIDTH, HEIGHT);
@@ -93,7 +77,10 @@ extern "C"
         SDL_SetRenderDrawColor(context, 255, 0, 0, 255);
         SDL_RenderClear(context);
 
-        drawBackgroundTile(context, palette, tile, 0, 0);
+        drawBackgroundTile(context, palette, _background_pattern_table[1], 0, 0);
+        drawBackgroundTile(context, palette, _background_pattern_table[3], 8, 0);
+        drawBackgroundTile(context, palette, _background_pattern_table[7], 0, 8);
+        drawBackgroundTile(context, palette, _background_pattern_table[9], 8, 8);
 
         clearRenderTarget(context);
 
