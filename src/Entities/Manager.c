@@ -151,7 +151,7 @@ void EntityManager_draw(SDL_Renderer* context) {
 void EntityManager_process(void) {
 
     struct entity* ent = NULL;
-    struct entity_class** ent_class = NULL;
+    struct entity_class* ent_class = NULL;
 
     for (ent = em.head; ent != NULL; ent = ent->next) {
 
