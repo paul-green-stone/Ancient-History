@@ -8,7 +8,7 @@
 
 #include <fps.h>
 
-void drawBackgroundTile(SDL_Renderer *r, NESPalette palette, NESTile tile, uint8_t x, uint8_t y)
+void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, uint8_t x, uint8_t y)
 {
     SDL_Color color1 = getColorFromPalette(palette.c1);
     SDL_Color color2 = getColorFromPalette(palette.c2);
@@ -39,7 +39,7 @@ extern "C"
 
     loadBackgroundPatternTable("./assets/background pattern table.png");
 
-    NESPalette palette = {.c0 = 0x0E, .c1 = 0x20, .c2 = 0x21, .c3 = 0x22};
+    NESPalette palette = {.c0 = 0x0E, .c1 = 0x37, .c2 = 0x27, .c3 = 0x17};
 
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize all subsystems
 
@@ -74,13 +74,13 @@ extern "C"
         /* Rendering */
         /* Draw to the screen texture first */
         setRenderTarget(screen);
-        SDL_SetRenderDrawColor(context, 255, 0, 0, 255);
+        SDL_SetRenderDrawColor(context, 0, 0, 0, 255);
         SDL_RenderClear(context);
 
-        drawBackgroundTile(context, palette, _background_pattern_table[1], 0, 0);
-        drawBackgroundTile(context, palette, _background_pattern_table[3], 8, 0);
-        drawBackgroundTile(context, palette, _background_pattern_table[7], 0, 8);
-        drawBackgroundTile(context, palette, _background_pattern_table[9], 8, 8);
+        drawNESTile(context, palette, _background_pattern_table[1], 0, 0);
+        drawNESTile(context, palette, _background_pattern_table[3], 8, 0);
+        drawNESTile(context, palette, _background_pattern_table[7], 0, 8);
+        drawNESTile(context, palette, _background_pattern_table[9], 8, 8);
 
         clearRenderTarget(context);
 

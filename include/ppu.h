@@ -102,4 +102,9 @@ void setBackgroundPalette(uint8_t palette_no, uint8_t c0, uint8_t c1, uint8_t c2
  */
 void setForegroundPalette(uint8_t palette_no, uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3);
 
+/**
+ * Copy the nametables to the screen along with their scroll position of the camera
+ */
+void drawNametables(SDL_Renderer *context, int scroll_x, int scroll_y);
+
 #endif // PPU_H

@@ -3,7 +3,7 @@
 
 #define WIDTH (256)  /* NES Width resolution */
 #define HEIGHT (224) /* NES Height resolution */
-#define SCALE (3)    /* Scale factor for screen */
+#define SCALE (4)    /* Scale factor for screen */
 
 const int SCREEN_WIDTH = WIDTH * SCALE;
 const int SCREEN_HEIGHT = HEIGHT * SCALE;

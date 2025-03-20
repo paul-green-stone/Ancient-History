@@ -82,8 +82,8 @@ NESPalette _foreground_palette[4] = {};
 SDL_Color getColorFromPalette(uint8_t palette_no)
 {
     return (SDL_Color){.r = PALETTE[palette_no] >> 16,
-                       .g = (PALETTE[palette_no] >> 8) & 0xFF,
-                       .b = PALETTE[palette_no] & 0xFF,
+                       .g = PALETTE[palette_no] >> 8,
+                       .b = PALETTE[palette_no],
                        .a = 255};
 }
 
