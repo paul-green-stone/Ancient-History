@@ -8,38 +8,29 @@
 
 #include <fps.h>
 
-void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, uint8_t x, uint8_t y)
-{
-    SDL_Color color1 = getColorFromPalette(palette.c1);
-    SDL_Color color2 = getColorFromPalette(palette.c2);
-    SDL_Color color3 = getColorFromPalette(palette.c3);
-
-    SDL_Color colors[] = {
-        (SDL_Color){0, 0, 0, 0}, color1, color2, color3};
-
-    uint8_t pixel_count = 0;
-    for (uint8_t i = 0; i < 16; i++)
-    {
-        for (uint8_t j = 0; j < 4; j++)
-        {
-            uint8_t color = (tile.pixels[i] >> (6 - j * 2)) & 0b11;
-            SDL_SetRenderDrawColor(r, colors[color].r, colors[color].g, colors[color].b, colors[color].a);
-            SDL_RenderDrawPoint(r, x + pixel_count % 8, y + pixel_count / 8);
-            pixel_count++;
-        }
-    }
-}
-
 #ifdef __cplusplus
 extern "C"
 #endif
     int
     main(int argc, char **argv)
 {
+    initPPU();
+    printf("%d\n", nametables[(KB_1 * 1) + 0 + 20 * (32 + 32 * 1)]);
 
     loadBackgroundPatternTable("./assets/background pattern table.png");
+    printf("%d\n", nametables[(KB_1 * 1) + 0 + 20 * (32 + 32 * 1)]);
 
     NESPalette palette = {.c0 = 0x0E, .c1 = 0x37, .c2 = 0x27, .c3 = 0x17};
+    _background_palette[0] = palette;
+
+    setNametableTile(0, 0, 26, 11);
+    setNametableTile(0, 1, 26, 11);
+    setNametableTile(0, 2, 26, 11);
+    setNametableTile(0, 3, 26, 11);
+    setNametableTile(0, 0, 27, 14);
+    setNametableTile(0, 1, 27, 14);
+    setNametableTile(0, 2, 27, 14);
+    setNametableTile(0, 3, 27, 14);
 
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize all subsystems
 
@@ -74,13 +65,8 @@ extern "C"
         /* Rendering */
         /* Draw to the screen texture first */
         setRenderTarget(screen);
-        SDL_SetRenderDrawColor(context, 0, 0, 0, 255);
-        SDL_RenderClear(context);
-
-        drawNESTile(context, palette, _background_pattern_table[1], 0, 0);
-        drawNESTile(context, palette, _background_pattern_table[3], 8, 0);
-        drawNESTile(context, palette, _background_pattern_table[7], 0, 8);
-        drawNESTile(context, palette, _background_pattern_table[9], 8, 8);
+        
+        drawNametables(context, 0);
 
         clearRenderTarget(context);
 
