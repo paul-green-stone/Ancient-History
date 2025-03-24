@@ -4,6 +4,8 @@
 #include "../../include/Entities/__entity.h"
 #include "../../include/Entities/__entity_class.h"
 
+#include "../../framework/include/clock.h"
+
 /* ================================================================ */
 
 struct player {

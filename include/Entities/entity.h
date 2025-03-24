@@ -42,6 +42,14 @@ SDL_Rect Entity_get_dimensions(const void* entity);
  */
 int Entity_isCollided(const void* self, const void* other);
 
+/**
+ * This is just a test function to check the `Falling` state.
+ * Me, Paul Stone, is not responsible for checking whether the player is on the platform or not,
+ * it involves a slightly different mechanism.
+ * For more information ask for Brick-Sigma.
+ */
+int Entity_isGrounded(const void* entity);
+
 /* ================================================================ */
 
 #endif /* _ACIENT_HISTORY_ENTITY_INTERFACE_H */

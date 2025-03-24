@@ -24,10 +24,10 @@ else
 endif
 
 $(OUT) : $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(INCLUDE) $(LDFLAGS)
+	$(CC) $(CFLAGS) -g -o $@ $^ $(INCLUDE) $(LDFLAGS)
 
 $(OBJECTS) : %.o : %.c
-	gcc -o $@ -c $< $(INCLUDE) $(LDFLAGS)
+	gcc -o $@ -c -g $< $(INCLUDE) $(LDFLAGS)
 
 .PHONY: clean
 clean:

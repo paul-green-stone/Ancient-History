@@ -5,6 +5,7 @@
 
 #include "../../framework/include/Math/Vector2D.h"
 #include "../../framework/include/texture.h"
+#include "../States/States.h"
 
 /* ================================================================ */
 /* ======================= Paul's Addition ======================== */
@@ -26,6 +27,8 @@ struct entity {
     Texture* texture;               /* Texture associated with the entity */
 
     SDL_Color color;                /* Entity's color. Just in case */
+
+    void* state;                    /* Entity's current state */
 
     struct entity* next;            /* Next entity in the list */
 

@@ -4,6 +4,9 @@
 #include "../../include/Entities/Entity.h"
 #include "../../framework/include/Math/Vector2D.h"
 #include "../../include/Entities/Manager.h"
+#include "../../include/States/state.h"
+#include "../../include/States/__state_class.h"
+#include "../../include/constants.h"
 
 /* ================================================================ */
 
@@ -48,6 +51,9 @@ void Entity_destroy(void* self) {
     if ((self != NULL) && (*ent_p != NULL) && ((*ent_p)->dtor != NULL)) {
         self = (*ent_p)->dtor(self);
     }
+
+    /* State is freed by its own function */
+    State_destroy(((struct entity*) self)->state);
 
     free(self);
 }
@@ -118,6 +124,15 @@ int Entity_isCollided(const void* self, const void* other) {
     r2 = Entity_get_dimensions(other);
 
     return ((r1.x < r2.x + r2.w) && (r1.x + r1.w > r2.x) && (r1.y < r2.y + r2.h) && (r1.y + r1.h > r2.y));
+}
+
+/* ================================ */
+
+int Entity_isGrounded(const void* _self) {
+
+    const struct entity* self = _self;
+
+    return self->position.y + self->height >= SCREEN_HEIGHT;
 }
 
 /* ================================================================ */

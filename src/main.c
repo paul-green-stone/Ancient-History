@@ -87,7 +87,7 @@ int main(int argc, char **argv)
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
     bool isRunning = true;
 
     void* ent1 = Entity_create(Entity, (Vector2D) {2.0, 3.0}, 25, 25, 1, NULL, &(SDL_Color) {0, 0, 0, 255});
-    void* player = Entity_create(Player, (Vector2D) {4.0, 16.0}, 50, 50, 1, NULL, &(SDL_Color) {0, 255, 0, 255});
+    void* player = Entity_create(Player, (Vector2D) {4.0, 16.0}, 32, 32, 1, NULL, &(SDL_Color) {0, 255, 0, 255});
 
     void* en1 = Entity_create(Enemy, (Vector2D) {6.0, 7.0}, 45, 45, 1, NULL, &(SDL_Color) {0, 0, 0, 255});
     void* c = Entity_create(Collectible, (Vector2D) {10.0, 11.0}, 10, 10, 1, NULL, &(SDL_Color) {0, 0, 255, 255});
@@ -140,11 +140,9 @@ int main(int argc, char **argv)
         SDL_SetRenderDrawColor(context, 255, 0, 0, 255);
         SDL_RenderClear(context);
 
-        //Level_draw(context, &level);
+        Level_draw(context, &level);
 
         draw_grid(context, &(SDL_Color) {0, 255, 0, 255});
-
-        Level_draw(context, &level);
 
         //clearRenderTarget(context);
 

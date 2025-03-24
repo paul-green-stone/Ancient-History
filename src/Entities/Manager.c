@@ -6,6 +6,10 @@
 #include "../../include/Entities/Entity.h"
 #include "../../include/Entities/Manager.h"
 #include "../../include/Entities/Player.h"
+#include "../../include/States/States.h"
+#include "../../include/States/state.h"
+
+#include "../../framework/include/io.h"
 
 /* ================================================================ */
 
@@ -169,6 +173,9 @@ void EntityManager_process(void) {
             }
         }
     }
+
+    State_handle(em.player);
+    State_update(em.player);
 }
 
 /* ================================================================ */
