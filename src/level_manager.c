@@ -68,9 +68,9 @@ void loadLevel(Level *level, const char *file)
         int p0, p1, p2, p3;
         sscanf(line_buffer, "%d %d %d %d", &p0, &p1, &p2, &p3);
         mega_tile.palettes[0] = (uint8_t)p0;
-        mega_tile.palettes[0] = (uint8_t)p1;
-        mega_tile.palettes[0] = (uint8_t)p2;
-        mega_tile.palettes[0] = (uint8_t)p3;
+        mega_tile.palettes[1] = (uint8_t)p1;
+        mega_tile.palettes[2] = (uint8_t)p2;
+        mega_tile.palettes[3] = (uint8_t)p3;
 
         // Load the types of tiles for the mega tile
         fgets(line_buffer, BUFFER_LEN, fp);
