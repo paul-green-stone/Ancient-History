@@ -5,6 +5,7 @@
 #include <texture.h>
 #include <window.h>
 #include <ppu.h>
+#include <level_manager.h>
 
 #include <fps.h>
 
@@ -15,10 +16,12 @@ extern "C"
     main(int argc, char **argv)
 {
     initPPU();
-    printf("%d\n", nametables[(KB_1 * 1) + 0 + 20 * (32 + 32 * 1)]);
+
+    Level *level = createLevel();
+    loadLevel(level, "./assets/level1.txt");
+    destroyLevel(level);
 
     loadBackgroundPatternTable("./assets/background pattern table.png");
-    printf("%d\n", nametables[(KB_1 * 1) + 0 + 20 * (32 + 32 * 1)]);
 
     NESPalette palette = {.c0 = 0x0E, .c1 = 0x37, .c2 = 0x27, .c3 = 0x17};
     _background_palette[0] = palette;
