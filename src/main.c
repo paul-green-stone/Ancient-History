@@ -17,19 +17,14 @@ extern "C"
 {
     initPPU();
 
-    Level *level = createLevel();
-    loadLevel(level, "./assets/level1.txt");
-    loadBackgroundPatternTable("./assets/background pattern table.png");
-
-    NESPalette palette = {.c0 = 0x0E, .c1 = 0x37, .c2 = 0x27, .c3 = 0x17};
-    _background_palette[0] = palette;
-
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize all subsystems
 
     Window *window = Window_new("Ancient History", SCREEN_WIDTH, SCREEN_HEIGHT,
                                 0, SDL_RENDERER_ACCELERATED);
     SDL_Renderer *context = Window_get_context(window);
-    SDL_SetRenderDrawBlendMode(context, SDL_BLENDMODE_ADD);
+
+    // TODO: Need to fix this
+    // SDL_SetRenderDrawBlendMode(context, SDL_BLENDMODE_ADD);
 
     /* Create the NES screen canvas for drawing to */
     RenderTexture screen = RenderTexture_new(context, WIDTH, HEIGHT);
@@ -39,6 +34,10 @@ extern "C"
 
     // Used to indicate if the game is still running
     bool isRunning = true;
+
+    Level *level = createLevel();
+    loadLevel(level, "./assets/level1.txt");
+    loadBackgroundPatternTable("./assets/background pattern table.png");
 
     while (isRunning)
     {

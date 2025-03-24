@@ -235,7 +235,7 @@ void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, int x, int y
 void drawNametables(SDL_Renderer *context, int scroll_x)
 {
     // Clear the screen with the set background color.
-    SDL_Color bg_color = getColorFromPalette(PALETTE[_background_palette[0].c0]);
+    SDL_Color bg_color = getColorFromPalette(_background_palette[0].c0);
     SDL_SetRenderDrawColor(context, bg_color.r, bg_color.g, bg_color.b, 255);
     SDL_RenderClear(context);
 
