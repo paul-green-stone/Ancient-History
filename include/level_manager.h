@@ -40,4 +40,9 @@ void destroyLevel(Level *level);
  */
 void loadLevel(Level *level, const char *file);
 
+/**
+ * Draws the level to the nametables
+ */
+void copyLevelToNametable(Level *level);
+
 #endif // LEVEL_MANAGER_H

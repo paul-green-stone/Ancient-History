@@ -19,21 +19,10 @@ extern "C"
 
     Level *level = createLevel();
     loadLevel(level, "./assets/level1.txt");
-    destroyLevel(level);
-
     loadBackgroundPatternTable("./assets/background pattern table.png");
 
     NESPalette palette = {.c0 = 0x0E, .c1 = 0x37, .c2 = 0x27, .c3 = 0x17};
     _background_palette[0] = palette;
-
-    setNametableTile(0, 0, 26, 11);
-    setNametableTile(0, 1, 26, 11);
-    setNametableTile(0, 2, 26, 11);
-    setNametableTile(0, 3, 26, 11);
-    setNametableTile(0, 0, 27, 14);
-    setNametableTile(0, 1, 27, 14);
-    setNametableTile(0, 2, 27, 14);
-    setNametableTile(0, 3, 27, 14);
 
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize all subsystems
 
@@ -63,13 +52,36 @@ extern "C"
             {
                 isRunning = false;
             }
+            if (event.type == SDL_KEYDOWN)
+            {
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_LEFT:
+                    level->scroll -= 1;
+                    if (level->scroll < 0) {
+                        level->scroll = 0;
+                    }
+                    break;
+
+                case SDLK_RIGHT:
+                    level->scroll += 1;
+                    if (level->scroll > 768) {
+                        level->scroll = 768;
+                    }
+                    break;
+
+                default:
+                    break;
+                }
+            }
         }
 
         /* Rendering */
         /* Draw to the screen texture first */
         setRenderTarget(screen);
-        
-        drawNametables(context, 0);
+
+        copyLevelToNametable(level);
+        drawNametables(context, level->scroll);
 
         clearRenderTarget(context);
 
@@ -84,5 +96,7 @@ extern "C"
 
     Window_destroy(&window);
     SDL_Quit();
+
+    destroyLevel(level);
     return 0;
 }

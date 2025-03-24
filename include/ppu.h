@@ -153,7 +153,7 @@ uint8_t getAttributeTable(uint8_t nametable_no, uint8_t x, uint8_t y);
 /**
  * Draws a tile to the screen
  */
-void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, uint8_t x, uint8_t y);
+void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, int x, int y);
 
 /**
  * Copy the nametables to the screen along with their scroll position of the camera

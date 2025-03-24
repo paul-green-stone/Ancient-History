@@ -210,7 +210,7 @@ uint8_t getAttributeTable(uint8_t nametable_no, uint8_t x, uint8_t y)
     return _ppu_attribute_table[(nametable_no * 256) + x + y * 16];
 }
 
-void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, uint8_t x, uint8_t y)
+void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, int x, int y)
 {
     SDL_Color color1 = getColorFromPalette(palette.c1);
     SDL_Color color2 = getColorFromPalette(palette.c2);
@@ -232,23 +232,6 @@ void drawNESTile(SDL_Renderer *r, NESPalette palette, NESTile tile, uint8_t x, u
     }
 }
 
-/**
- * Draws a tile from the nametable to the screen.
- */
-static void drawNametableXY(SDL_Renderer *context, int nametable_no, int x, int y, int scroll_x)
-{
-    if (getNametableTile(nametable_no, x, y) != 0)
-    {
-        printf("Not zero! %d %d %d %d\n", nametable_no, x, y, getNametableTile(nametable_no, x, y));
-    }
-    NESTile tile = _background_pattern_table[getNametableTile(nametable_no, x, y)];
-    int x_pos = ((nametable_no * 32) + (x * 8) - scroll_x) % 256;
-    x_pos = (x_pos < 0) ? x_pos + 256 : x_pos;
-    int y_pos = y * 8;
-    NESPalette palette = _background_palette[getAttributeTable(nametable_no, x / 2, y / 2)];
-    drawNESTile(context, palette, tile, x_pos, y_pos);
-}
-
 void drawNametables(SDL_Renderer *context, int scroll_x)
 {
     // Clear the screen with the set background color.
@@ -257,16 +240,14 @@ void drawNametables(SDL_Renderer *context, int scroll_x)
     SDL_RenderClear(context);
 
     scroll_x %= 512;
-    int first, second;
+    int first;
     if (scroll_x >= 256)
     {
         first = 1;
-        second = 0;
     }
     else
     {
         first = 0;
-        second = 1;
     }
 
     for (int i = 0; i < 32; i++)
@@ -274,10 +255,10 @@ void drawNametables(SDL_Renderer *context, int scroll_x)
         for (int j = 0; j < 28; j++)
         {
             int tile_index = getNametableTile(first, i, j);
-            int palette_index = getAttributeTable(first, i, j);
+            int palette_index = getAttributeTable(first, i / 2, j / 2);
             NESTile tile = _background_pattern_table[tile_index];
             NESPalette palette = _background_palette[palette_index];
-            drawNESTile(context, palette, tile, i * 8 - scroll_x, j * 8);
+            drawNESTile(context, palette, tile, i * 8 - scroll_x + (256 * first), j * 8);
         }
     }
 
@@ -286,28 +267,10 @@ void drawNametables(SDL_Renderer *context, int scroll_x)
         for (int j = 0; j < 28; j++)
         {
             int tile_index = getNametableTile(first == 0, i, j);
-            int palette_index = getAttributeTable(first == 0, i, j);
-            if (tile_index != 0)
-            {
-                // printf("Not equal to zero! %d %d %d %d\n", i, j, first == 0, tile_index);
-            }
+            int palette_index = getAttributeTable(first == 0, i / 2, j / 2);
             NESTile tile = _background_pattern_table[tile_index];
             NESPalette palette = _background_palette[palette_index];
-            drawNESTile(context, palette, tile, i * 8 - scroll_x + 256, j * 8);
+            drawNESTile(context, palette, tile, i * 8 - scroll_x + 256 + (256 * first), j * 8);
         }
     }
-    // int tile_x = scroll_x / 8 - 1;
-    // tile_x = (tile_x < 0) ? 64 + tile_x : tile_x;
-    // for (int i = tile_x; i < tile_x + 33; i++)
-    // {
-    //     int nametable_no = i / 32;
-    //     if (nametable_no = 1) {
-    //         printf("%d %d\n", i, tile_x);
-    //     }
-    //     int x = i % 32;
-    //     for (int j = 0; j < 28; j++)
-    //     {
-    //         drawNametableXY(context, nametable_no, x, j, scroll_x);
-    //     }
-    // }
 }

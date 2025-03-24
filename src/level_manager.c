@@ -9,6 +9,7 @@
 Level *createLevel()
 {
     Level *level = (Level *)calloc(1, sizeof(Level));
+    level->scroll = 0;
     if (level == NULL)
     {
         perror("Could not allocate memory for the level:");
@@ -79,7 +80,7 @@ void loadLevel(Level *level, const char *file)
         while (sscanf(line_buffer + offset, " %d %n", &tile, &chr_read) == 1)
         {
             offset += chr_read;
-            mega_tile.types[tile_no] = tile;
+            mega_tile.types[tile_no] = (uint8_t)tile;
             tile_no++;
         }
 
@@ -107,4 +108,68 @@ void loadLevel(Level *level, const char *file)
     }
 
     fclose(fp);
+}
+
+void copyLevelToNametable(Level *level)
+{
+    int scroll_x = (level->scroll % 1024);
+    int table1 = 0, table2 = 0;
+    if (scroll_x < 256)
+    {
+        table1 = 0;
+        table2 = 1;
+    }
+    else if (scroll_x < 512)
+    {
+        table1 = 2;
+        table2 = 1;
+    }
+    else if (scroll_x < 768)
+    {
+        table1 = 2;
+        table2 = 3;
+    }
+    else
+    {
+        table1 = 0;
+        table2 = 3;
+    }
+
+    for (int h = 0; h < 7; h++)
+    {
+        for (int w = 0; w < 8; w++)
+        {
+            MegaTile mega_tile = level->tile_set[level->data[(8 * table1) + w + h * 32]];
+            for (int x = 0; x < 4; x++)
+            {
+                for (int y = 0; y < 4; y++)
+                {
+                    setNametableTile(0, (w * 4) + x, (h * 4) + y, mega_tile.tiles[x + y * 4]);
+                }
+            }
+            setAttributeTable(0, (w * 4) / 2, (h * 4) / 2, mega_tile.palettes[0]);
+            setAttributeTable(0, (w * 4 + 2) / 2, (h * 4) / 2, mega_tile.palettes[1]);
+            setAttributeTable(0, (w * 4) / 2, (h * 4 + 2) / 2, mega_tile.palettes[2]);
+            setAttributeTable(0, (w * 4 + 2) / 2, (h * 4 + 2) / 2, mega_tile.palettes[3]);
+        }
+    }
+
+    for (int h = 0; h < 7; h++)
+    {
+        for (int w = 0; w < 8; w++)
+        {
+            MegaTile mega_tile = level->tile_set[level->data[(8 * table2) + w + h * 32]];
+            for (int x = 0; x < 4; x++)
+            {
+                for (int y = 0; y < 4; y++)
+                {
+                    setNametableTile(1, (w * 4) + x, (h * 4) + y, mega_tile.tiles[x + y * 4]);
+                }
+            }
+            setAttributeTable(1, (w * 4) / 2, (h * 4) / 2, mega_tile.palettes[0]);
+            setAttributeTable(1, (w * 4 + 2) / 2, (h * 4) / 2, mega_tile.palettes[1]);
+            setAttributeTable(1, (w * 4) / 2, (h * 4 + 2) / 2, mega_tile.palettes[2]);
+            setAttributeTable(1, (w * 4 + 2) / 2, (h * 4 + 2) / 2, mega_tile.palettes[3]);
+        }
+    }
 }
