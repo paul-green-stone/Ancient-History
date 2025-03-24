@@ -35,6 +35,7 @@ void loadLevel(Level *level, const char *file)
         fgets(line_buffer, BUFFER_LEN, fp);
         sscanf(line_buffer, "%d %d %d %d", &c0, &c1, &c2, &c3);
         setBackgroundPalette(i, c0, c1, c2, c3);
+        printf("%d %d %d %d\n", _background_palette[i].c0, _background_palette[i].c1, _background_palette[i].c2, _background_palette[i].c3);
     }
 
     // Load the foreground color palettes
