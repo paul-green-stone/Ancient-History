@@ -31,7 +31,10 @@ struct entity {
     void* state;                    /* Entity's current state */
 
     struct entity* next;            /* Next entity in the list */
-
+    
+    double speed;                   /* Entity's speed */
+    double jump_speed;
+    Vector2D velocity;              /* Entity's vector velocity */
 };
 
 /* ================================================================ */

@@ -41,8 +41,6 @@ static void Crouching_update(void* _entity) {
     /* Slighlty decrease the player's velocity */
     if (Input_isKey_pressed(SDL_SCANCODE_LEFT)) {
 
-        entity->position.x -= 1;
-
         if (entity->position.x - entity->width + entity->width <= 0) {
             entity->position.x = 0;
         }
@@ -50,8 +48,6 @@ static void Crouching_update(void* _entity) {
 
     /* Slighlty decrease the player's velocity */
     if (Input_isKey_pressed(SDL_SCANCODE_RIGHT)) {
-
-        entity->position.x += 1;
 
         if (entity->position.x + entity->width >= SCREEN_WIDTH) {
             entity->position.x = SCREEN_WIDTH - entity->width;

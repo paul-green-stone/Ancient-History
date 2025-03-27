@@ -3,6 +3,7 @@
 #include "../../include/States/States.h"
 #include "../../include/Entities/__entity_class.h"
 #include "../../include/Entities/__entity.h"
+#include "../../include/Entities/__player.h"
 
 #include "../../framework/include/clock.h"
 #include "../../framework/include/io.h"
@@ -48,6 +49,7 @@ static void* Standing_dtor(void* _self) {
 static void Standing_handle(void* _entity) {
 
     struct entity* entity = _entity;
+    struct player* player = _entity;
     
     /* Going to enter the `Running` state */
     if (Input_isKey_pressed(SDL_SCANCODE_LEFT) || (Input_isKey_pressed(SDL_SCANCODE_RIGHT))) {
@@ -84,6 +86,7 @@ static void Standing_handle(void* _entity) {
 
         /* Enter a new state */
         entity->state = State_create(Jumping);
+        entity->velocity.y = entity->jump_speed;
     }
 }
 
@@ -95,9 +98,10 @@ static void Standing_update(void* _entity) {
     struct standing_state* state = entity->state;
 
     if (Clock_isReady(state->clock)) {
-        printf("IDLEing now\n");
+        
     }
 
+    entity->position = Vector2D_add(&entity->position, &entity->velocity);
     Clock_update(state->clock);
 }
 

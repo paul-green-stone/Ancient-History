@@ -1,6 +1,8 @@
 #ifndef _ANCIENT_HISTORY_ENTITY_MANAGER_H
 #define _ANCIENT_HISTORY_ENTITY_MANAGER_H
 
+#include "../Level.h"
+
 /* ================================================================ */
 
 /**
@@ -27,6 +29,16 @@ void EntityManager_draw(SDL_Renderer* context);
  * 
  */
 void EntityManager_process(void);
+
+/**
+ * 
+ */
+Level* EntityManager_getLevel(void);
+
+/**
+ * 
+ */
+void EntityManager_setLevel(Level* level);
 
 /* ================================================================ */
 

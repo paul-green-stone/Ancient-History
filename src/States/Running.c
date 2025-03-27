@@ -1,13 +1,16 @@
+#include "../../include/constants.h"
 #include "../../include/States/__state_class.h"
 #include "../../include/States/state.h"
 #include "../../include/States/States.h"
 #include "../../include/Entities/__entity_class.h"
 #include "../../include/Entities/__entity.h"
+#include "../../include/Entities/entity.h"
+#include "../../include/Entities/Manager.h"
 
 #include "../../framework/include/clock.h"
 #include "../../framework/include/io.h"
 
-#include "../../include/constants.h"
+extern Clock* m_clock;
 
 /* ================================================================ */
 
@@ -21,7 +24,7 @@ static void Running_handle(void* _entity) {
 
     struct entity* entity = _entity;
 
-    /* Ging to enter the `Standing` state */
+    /* Going to enter the `Standing` state */
     if (!Input_isKey_pressed(SDL_SCANCODE_LEFT) || (!Input_isKey_pressed(SDL_SCANCODE_RIGHT))) {
 
         /* Exit the current state */
@@ -44,6 +47,20 @@ static void Running_handle(void* _entity) {
         /* Enter a new state */
         entity->state = State_create(Ducking);
     }
+
+    /* ================ */
+
+    /* Going to enter the `Jumping` state */
+    if (Input_isKey_pressed(SDL_SCANCODE_UP)) {
+
+        /* Exit the current state */
+        State_destroy(entity->state);
+        entity->state = NULL;
+
+        /* Enter a new state */
+        entity->state = State_create(Jumping);
+        entity->velocity.y = entity->jump_speed;
+    }
 }
 
 /* ================================ */
@@ -52,26 +69,45 @@ static void Running_update(void* _entity) {
 
     struct entity* entity = _entity;
     struct standing_state* state = entity->state;
-
-    /* Increate the player's speed while running */
+    
+    /* Increase the player's speed while running */
     if (Input_isKey_pressed(SDL_SCANCODE_LEFT)) {
 
-        entity->position.x -= 3;
+        entity->velocity.x = -(Clock_getDelta(m_clock) * entity->speed);
+        entity->position = Vector2D_add(&entity->position, &entity->velocity);
 
         if (entity->position.x <= 0) {
             entity->position.x = 0;
         }
     }
 
-    /* Increate the player's speed while running */
+    /* ================ */
+
+    /* Increase the player's speed while running */
     if (Input_isKey_pressed(SDL_SCANCODE_RIGHT)) {
 
-        entity->position.x += 3;
+        entity->velocity.x = Clock_getDelta(m_clock) * entity->speed;
+        entity->position = Vector2D_add(&entity->position, &entity->velocity);
 
         if (entity->position.x + entity->width >= SCREEN_WIDTH) {
             entity->position.x = SCREEN_WIDTH - entity->width;
         }
     }
+
+    /* ================ */
+
+    /* The player is falling off the platform */
+    if (!Entity_isGrounded(entity, EntityManager_getLevel())) {
+
+        /* Exit the current state */
+        State_destroy(entity->state);
+        entity->state = NULL;
+ 
+        /* Enter a new state */
+        entity->state = State_create(Falling);
+    }
+
+    entity->velocity.x = entity->velocity.y = 0;
 }
 
 /* ================================================================ */

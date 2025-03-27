@@ -22,6 +22,8 @@ typedef struct entity_manager {
 
     struct entity* player;      /* Player */
 
+    Level* current;             /* Current level */
+
 } EntityManager;
 
 static EntityManager em = {0, 0, 0};
@@ -176,6 +178,23 @@ void EntityManager_process(void) {
 
     State_handle(em.player);
     State_update(em.player);
+}
+
+/* ================================ */
+
+Level* EntityManager_getLevel(void) {
+    return em.current;
+}
+
+/* ================================ */
+
+void EntityManager_setLevel(Level* level) {
+    
+    if (level == NULL) {
+        return ;
+    }
+
+    em.current= level;
 }
 
 /* ================================================================ */

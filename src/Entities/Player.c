@@ -16,7 +16,7 @@ static void* Player_ctor(void* _self, va_list* app) {
     struct entity* player_entity = _self;
 
     /* The Player is IDLEing Initially */
-    player_entity->state = State_create(Standing);
+    player_entity->state = State_create(Falling);
 
     return self;
 }

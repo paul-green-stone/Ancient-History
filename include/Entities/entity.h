@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "../../framework/include/Math/Vector2D.h"
+#include "../Level.h"
 
 /* ================================================================ */
 
@@ -48,7 +49,12 @@ int Entity_isCollided(const void* self, const void* other);
  * it involves a slightly different mechanism.
  * For more information ask for Brick-Sigma.
  */
-int Entity_isGrounded(const void* entity);
+int Entity_isGrounded(const void* entity, Level* level);
+
+/**
+ * 
+ */
+int Entity_isPlatformAbove(const void* entity, Level* level);
 
 /* ================================================================ */
 

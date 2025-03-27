@@ -64,7 +64,7 @@ void Entity_destroy(void* self) {
 
 int Entity_draw(void* _self, SDL_Renderer* context) {
 
-    const struct entity* self;
+    struct entity* self;
     SDL_Color original_color;
     int status = 0;
 
@@ -81,6 +81,10 @@ int Entity_draw(void* _self, SDL_Renderer* context) {
     status = SDL_RenderFillRect(context, &rect);
 
     SDL_SetRenderDrawColor(context, original_color.r, original_color.g, original_color.b, original_color.a);
+
+    self->level_x = self->position.x / TILE_SIZE;
+    self->level_y = self->position.y / TILE_SIZE;
+
     return status;
 }
 
@@ -128,11 +132,22 @@ int Entity_isCollided(const void* self, const void* other) {
 
 /* ================================ */
 
-int Entity_isGrounded(const void* _self) {
+int Entity_isGrounded(const void* _self, Level* level) {
 
     const struct entity* self = _self;
 
-    return self->position.y + self->height >= SCREEN_HEIGHT;
+    /* Check only the presence of a platform beneath the player */
+    return level->level[(int) (self->position.y + self->height) / TILE_SIZE][self->level_x] > 0;
+}
+
+/* ================================ */
+
+int Entity_isPlatformAbove(const void* _self, Level* level) {
+
+    const struct entity* self = _self;
+
+    /* Check only the presence of a platform above the player */
+    return level->level[(int) (self->position.y / TILE_SIZE)][self->level_x] > 0;
 }
 
 /* ================================================================ */

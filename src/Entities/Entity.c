@@ -11,9 +11,12 @@ static void* Entity_ctor(void* _self, va_list* app) {
 
     struct entity* self = _self;
 
-    self->position = va_arg(*app, Vector2D);
+    self->position = *(va_arg(*app, Vector2D*));
     self->position.x *= TILE_SIZE;
     self->position.y *= TILE_SIZE;
+
+    self->level_x = self->position.x / TILE_SIZE;
+    self->level_y = self->position.y / TILE_SIZE;
     
     self->width = va_arg(*app, int);
     self->height = va_arg(*app, int);
@@ -23,6 +26,12 @@ static void* Entity_ctor(void* _self, va_list* app) {
     self->texture = va_arg(*app, Texture*);
 
     self->color = *(va_arg(*app, SDL_Color*));
+
+    self->speed = va_arg(*app, double);
+    self->velocity.x = 0.0f;
+    self->velocity.y = 0.0f;
+
+    self->jump_speed = -7.0f;
 
     /* Completely initialized structure at this point */
     return self;

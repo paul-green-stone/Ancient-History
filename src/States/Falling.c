@@ -4,6 +4,7 @@
 #include "../../include/Entities/__entity_class.h"
 #include "../../include/Entities/__entity.h"
 #include "../../include/Entities/entity.h"
+#include "../../include/Entities/Manager.h"
 
 #include "../../framework/include/clock.h"
 #include "../../framework/include/io.h"
@@ -28,9 +29,12 @@ static void Falling_update(void* _entity) {
     struct entity* entity = _entity;
     struct standing_state* state = entity->state;
 
-    entity->position.y += 1;
+    /* Keep updating the entity's velocity.
+    When you enter the `Falling` state, its vertical velocity becomes positive, and the player goes down */
+    entity->velocity.y += gravity * Clock_getDelta(m_clock);
 
-    if (Entity_isGrounded(entity)) {
+    /* The player has landed on the platform or something that can support it */
+    if (Entity_isGrounded(entity, EntityManager_getLevel())) {
 
         /* Exit the current state */
         State_destroy(entity->state);
@@ -38,13 +42,18 @@ static void Falling_update(void* _entity) {
 
         /* Enter a new state */
         entity->state = State_create(Standing);
+        entity->velocity.x = entity->velocity.y = 0;
+
+        /* To adjust the player vertically on the platform after landing */
+        entity->position.y = (entity->level_y * TILE_SIZE) + (TILE_SIZE - entity->height);
     }
 
     /* ================ */
 
+    /* Allow the player to move while falling */
     if (Input_isKey_pressed(SDL_SCANCODE_LEFT)) {
 
-        entity->position.x -= 1.5;
+        entity->velocity.x = -(Clock_getDelta(m_clock) * entity->speed);
 
         if (entity->position.x <= 0) {
             entity->position.x = 0;
@@ -53,14 +62,20 @@ static void Falling_update(void* _entity) {
 
     /* ================ */
 
+    /* Allow the player to move while falling */
     if (Input_isKey_pressed(SDL_SCANCODE_RIGHT)) {
 
-        entity->position.x += 1.5;
+        entity->velocity.x = Clock_getDelta(m_clock) * entity->speed; 
 
         if (entity->position.x <= 0) {
             entity->position.x = 0;
         }
     }
+
+    /* Update the player's position */
+    entity->position = Vector2D_add(&entity->position, &entity->velocity);
+    /* Prevent inertia */
+    entity->velocity.x = 0;
 }
 
 /* ================================================================ */
