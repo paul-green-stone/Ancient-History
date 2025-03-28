@@ -36,8 +36,28 @@ static void Jumping_update(void* _entity) {
     /* After entering the `Jumping` state, the player's vertical velocity is negative, causing the player to move upward.
     The gravitation acting on it increments its velocity. DO NOT FORGET THAT POSITIVE Y GOES DOWNWARD! */
     entity->velocity.y += gravity * Clock_getDelta(m_clock);
-    /* Update the player's position */
-    entity->position = Vector2D_add(&entity->position, &entity->velocity);
+
+    /* Allow the player to move while falling */
+    if (Input_isKey_pressed(SDL_SCANCODE_LEFT)) {
+
+        entity->velocity.x = -(Clock_getDelta(m_clock) * entity->speed);
+
+        if (entity->position.x <= 0) {
+            entity->position.x = 0;
+        }
+    }
+
+    /* ================ */
+
+    /* Allow the player to move while falling */
+    if (Input_isKey_pressed(SDL_SCANCODE_RIGHT)) {
+
+        entity->velocity.x = Clock_getDelta(m_clock) * entity->speed; 
+
+        if (entity->position.x <= 0) {
+            entity->position.x = 0;
+        }
+    }
 
     /* This one is supposed to check whether there is a platform above the player or not.
     SPOILER: Doesn't work as intended (AT ALL!) */
@@ -52,13 +72,15 @@ static void Jumping_update(void* _entity) {
         /* Enter a new state */
         entity->state = State_create(Falling);
 
-        printf("Platform is above the player\n");
+        /* The player just hit the platform and immediately stopped. */
+        entity->velocity.y = 0;
+        entity->position.y = (entity->level_y + 1) * TILE_SIZE;
     }
 
     /* ================ */
 
-    /* When the vertical velocity becomes zero or negative, it means the player started to fall down */
-    if (entity->velocity.y <= 0) {
+    /* When the vertical velocity becomes positive or zero, it means the player started to fall down */
+    if (entity->velocity.y >= 0) {
 
         /* Exit the current state */
         State_destroy(entity->state);
@@ -67,6 +89,11 @@ static void Jumping_update(void* _entity) {
         /* Enter a new state */
         entity->state = State_create(Falling);
     }
+
+    /* Update the player's position */
+    entity->position = Vector2D_add(&entity->position, &entity->velocity);
+    /* Prevent inertia */
+    entity->velocity.x = 0;
 }
 
 /* ================================================================ */

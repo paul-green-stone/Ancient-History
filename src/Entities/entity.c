@@ -147,7 +147,7 @@ int Entity_isPlatformAbove(const void* _self, Level* level) {
     const struct entity* self = _self;
 
     /* Check only the presence of a platform above the player */
-    return level->level[(int) (self->position.y / TILE_SIZE)][self->level_x] > 0;
+    return (level->level[self->level_y][self->level_x] > 0) || (level->level[self->level_y][((int) self->position.x + self->width) / TILE_SIZE] > 0);
 }
 
 /* ================================================================ */

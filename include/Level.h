@@ -26,6 +26,11 @@ void draw_grid(SDL_Renderer* r, SDL_Color* color);
  */
 void Level_draw(SDL_Renderer* r, Level* level);
 
+/**
+ * 
+ */
+void Level_debug(const Level* level);
+
 /* ================================================================ */
 
 #endif /* _ANCIENT_HISTORY_LEVEL */

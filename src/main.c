@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
     bool isRunning = true;
 
     //void* ent1 = Entity_create(Entity, &(Vector2D) {2.0, 3.0}, 25, 25, 1, NULL, &(SDL_Color) {0, 0, 0, 255}, 0.0);
-    void* player = Entity_create(Player, &(Vector2D) {4.0, 16.0}, 28, 28, 1, NULL, &(SDL_Color) {0, 255, 0, 255}, 150.0);
+    void* player = Entity_create(Player, &(Vector2D) {4.0, 16.0}, 16, 16, 1, NULL, &(SDL_Color) {0, 255, 0, 255}, 150.0);
 
     void* en1 = Entity_create(Enemy, &(Vector2D) {6.0, 7.0}, 45, 45, 0.0, 1, NULL, &(SDL_Color) {0, 0, 0, 255}, 0.0);
     void* c = Entity_create(Collectible, &(Vector2D) {10.0, 11.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 0.0);

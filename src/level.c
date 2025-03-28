@@ -45,4 +45,22 @@ void Level_draw(SDL_Renderer* r, Level* level) {
     }
 }
 
+/* ================================ */
+
+void Level_debug(const Level* level) {
+
+    size_t width = SCREEN_WIDTH / TILE_SIZE;
+    size_t height = SCREEN_HEIGHT / TILE_SIZE;
+
+    for (size_t x = 0; x < height; x++) {
+
+        for (size_t y = 0; y < width; y++) {
+
+            if (level->level[x][y] > 0) {
+                printf("Platform at: [%d; %d]\n", y, x);
+            }
+        }
+    }
+}
+
 /* ================================================================ */
