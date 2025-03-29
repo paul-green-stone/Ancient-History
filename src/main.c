@@ -51,6 +51,7 @@ extern "C"
     while (isRunning)
     {
         /* Event handing */
+        SDL_PumpEvents();
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -65,22 +66,23 @@ extern "C"
                 // Keyboard input handling
                 switch (event.key.keysym.sym)
                 {
-                case SDLK_LEFT:
-                    setCameraScroll(camera, camera->pos[0] - 1, camera->pos[1]);
-                    break;
-                case SDLK_RIGHT:
-                    setCameraScroll(camera, camera->pos[0] + 1, camera->pos[1]);
-                    break;
-                case SDLK_UP:
-                    setCameraScroll(camera, camera->pos[0], camera->pos[1] - 1);
-                    break;
-                case SDLK_DOWN:
-                    setCameraScroll(camera, camera->pos[0], camera->pos[1] + 1);
-                    break;
                 default:
                     break;
                 }
             }
+        }
+
+        // EVENT HANDLING
+        const Uint8 *keys_pressed = SDL_GetKeyboardState(NULL);
+        if (keys_pressed[SDL_SCANCODE_LEFT]) {
+            camera->pos[0]--;
+        } else if (keys_pressed[SDL_SCANCODE_RIGHT]){
+            camera->pos[0]++;
+        }
+        if (keys_pressed[SDL_SCANCODE_UP]) {
+            camera->pos[1]--;
+        } else if (keys_pressed[SDL_SCANCODE_DOWN]){
+            camera->pos[1]++;
         }
 
         /* Rendering */

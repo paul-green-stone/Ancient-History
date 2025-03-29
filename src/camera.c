@@ -42,16 +42,18 @@ void drawLevelToCamera(Camera *camera, Level *level)
     // Get the starting x and y tiles from the level map.
     int tile_x = (camera->pos[0] / level->tile_size);
     int tile_y = (camera->pos[1] / level->tile_size);
+    int grid_width = (int)roundf(camera->width/level->tile_size);
+    int grid_height = (int)roundf(camera->height/level->tile_size);
 
-    for (int h = 0; h < level->height; h++)
+    for (int h = tile_y; h < tile_y + grid_height + 1; h++)
     {
-        if (h < 0 || h > level->height)
+        if (h < 0 || h >= level->height)
         {
             continue;
         }
-        for (int w = 0; w < level->width; w++)
+        for (int w = tile_x; w < tile_x + grid_width + 1; w++)
         {
-            if (w < 0 || w > level->width)
+            if (w < 0 || w >= level->width)
             {
                 continue;
             }
