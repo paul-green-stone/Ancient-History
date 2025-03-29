@@ -58,6 +58,7 @@ RenderTexture RenderTexture_new(SDL_Renderer *renderer, int width, int height)
 		printf("ERROR: %s\n", error);
 		SDL_ClearError();
 	}
+	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 	rt.texture.r = renderer;
 	rt.texture.t = texture;
 	return rt;

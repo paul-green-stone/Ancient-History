@@ -4,10 +4,10 @@
 
 #include <texture.h>
 #include <window.h>
-#include <ppu.h>
-#include <level_manager.h>
 
 #include <fps.h>
+#include <level_manager.h>
+#include <camera.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -15,29 +15,38 @@ extern "C"
     int
     main(int argc, char **argv)
 {
-    initPPU();
-
     SDL_Init(SDL_INIT_EVERYTHING); // Initialize all subsystems
 
     Window *window = Window_new("Ancient History", SCREEN_WIDTH, SCREEN_HEIGHT,
                                 0, SDL_RENDERER_ACCELERATED);
     SDL_Renderer *context = Window_get_context(window);
 
-    // TODO: Need to fix this
-    // SDL_SetRenderDrawBlendMode(context, SDL_BLENDMODE_ADD);
-
-    /* Create the NES screen canvas for drawing to */
-    RenderTexture screen = RenderTexture_new(context, WIDTH, HEIGHT);
+    Camera *camera = createCamera(context, WIDTH, HEIGHT);
 
     /* Create the FPS clock */
     FPSClock clock = FPSClock_new(FPS);
 
+    /**
+     * Level loading
+     */
+    Level *level = loadLevel("./assets/level.png", TILE_SIZE);
+    if (level == NULL)
+    {
+        printf("Could not load level!\n");
+        return -1;
+    }
+
+    for (int h = 0; h < level->height; h++)
+    {
+        for (int w = 0; w < level->width; w++)
+        {
+            printf("%d ", level->map[w + h * level->width]);
+        }
+        printf("\n");
+    }
+
     // Used to indicate if the game is still running
     bool isRunning = true;
-
-    Level *level = createLevel();
-    loadLevel(level, "./assets/level1.txt");
-    loadBackgroundPatternTable("./assets/background pattern table.png");
 
     while (isRunning)
     {
@@ -53,22 +62,21 @@ extern "C"
             }
             if (event.type == SDL_KEYDOWN)
             {
+                // Keyboard input handling
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_LEFT:
-                    level->scroll -= 1;
-                    if (level->scroll < 0) {
-                        level->scroll = 0;
-                    }
+                    setCameraScroll(camera, camera->pos[0] - 1, camera->pos[1]);
                     break;
-
                 case SDLK_RIGHT:
-                    level->scroll += 1;
-                    if (level->scroll > 768) {
-                        level->scroll = 768;
-                    }
+                    setCameraScroll(camera, camera->pos[0] + 1, camera->pos[1]);
                     break;
-
+                case SDLK_UP:
+                    setCameraScroll(camera, camera->pos[0], camera->pos[1] - 1);
+                    break;
+                case SDLK_DOWN:
+                    setCameraScroll(camera, camera->pos[0], camera->pos[1] + 1);
+                    break;
                 default:
                     break;
                 }
@@ -77,25 +85,25 @@ extern "C"
 
         /* Rendering */
         /* Draw to the screen texture first */
-        setRenderTarget(screen);
+        setRenderCamera(camera);
+        SDL_SetRenderDrawColor(context, 255, 255, 255, 255);
+        SDL_RenderClear(context);
 
-        copyLevelToNametable(level);
-        drawNametables(context, level->scroll);
+        drawLevelToCamera(camera, level);
 
         clearRenderTarget(context);
 
-        Texture_draw(&screen.texture, NULL, NULL);
+        Texture_draw(&camera->texture.texture, NULL, NULL);
         SDL_RenderPresent(context);
 
         /* Clock system */
         FPSClock_tick(&clock);
     }
 
-    RenderTexture_destroy(screen);
+    unloadLevel(level);
+    deleteCamera(camera);
 
     Window_destroy(&window);
     SDL_Quit();
-
-    destroyLevel(level);
     return 0;
 }

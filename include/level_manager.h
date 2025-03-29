@@ -1,48 +1,28 @@
 #ifndef LEVEL_MANAGER_H
 #define LEVEL_MANAGER_H
 
-#include <ppu.h>
+#include <stdint.h>
 
-/**
- * Struct for a meta-meta-tile (or mega tile)
- */
-typedef struct MegaTile
-{
-    uint8_t tiles[16];   // Indexes the background pattern table for each tile in the mega tile
-    uint8_t palettes[4]; // The color palette to use for each 2x2 tile set
-    uint8_t types[16];   // The type of each block in the mega tile, `0` for empty, `1` for solid, `2` for bridges, and `3` for dangerous objects.
-} MegaTile;
-
-/**
- * Struct used to contain an entire level
- */
+// Level object/struct
+//
+// Also contains the information for the camera (this may change later on...)
 typedef struct Level
 {
-    MegaTile tile_set[64]; // The tile set for the level
-    uint8_t data[224];     // The actual level data, with each element indexing the tileset
-    int scroll;            // The scroll value of the level, used when copying the level to the nametables in the ppu
+    int width;         // Width of entire level (measured in number of tiles)
+    int height;        // Height of entire level (measured in number of tiles)
+    int tile_size;     // Size of an individual squar tile side
+    uint8_t *map;      // The actual level map data (for a single layer)
+    int camera_pos[2]; // Position of the camera, used for scrolling the screen
 } Level;
 
 /**
- * Allocates memory on the heap for the level.
- * You can call this once and load multiple levels using the same object again.
+ * Load and create a new level based off of a pixel map of the level
  */
-Level *createLevel();
+Level *loadLevel(const char *level_pixel_map, int tile_size);
 
 /**
- * Free's the level from memory.
+ * Frees the level data from heap
  */
-void destroyLevel(Level *level);
-
-/**
- * Loads a level from a text file into a level object. This also initializes the color palette for the level foreground and background,
- * and places all the entities like players and enemies into the correct places.
- */
-void loadLevel(Level *level, const char *file);
-
-/**
- * Draws the level to the nametables
- */
-void copyLevelToNametable(Level *level);
+void unloadLevel(Level *level);
 
 #endif // LEVEL_MANAGER_H
