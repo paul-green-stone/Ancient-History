@@ -23,6 +23,11 @@ void State_handle(void* entity);
  */
 void State_update(void* entity);
 
+/**
+ * 
+ */
+int State_draw(void* entity);
+
 /* ================================================================ */
 
 #endif /* _ANCIENT_HISTORY_STATE_INTERFACE_H */

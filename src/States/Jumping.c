@@ -24,6 +24,24 @@ struct jumping_state {
 static void Jumping_handle(void* _entity) {
 
     struct entity* entity = _entity;
+
+    Level* level = EntityManager_getLevel();
+
+    SDL_Rect* env = Level_get_surroundings();
+    SDL_Rect hitbox = (SDL_Rect) {.x = entity->position.x, .y = entity->position.y, .w = entity->width, .h = entity->height};
+
+    // if (does_rect_collide(hitbox, env[Top]) || does_rect_collide(hitbox, env[TopRight])) {
+
+    //     /* Exit the current state */
+    //     State_destroy(entity->state);
+    //     entity->state = NULL;
+
+    //     /* Enter a new state */
+    //     entity->state = State_create(Falling);
+
+    //     /* The player just hit the platform and immediately stopped. */
+    //     entity->velocity.y = 0;
+    // }
 }
 
 /* ================================ */
@@ -31,39 +49,30 @@ static void Jumping_handle(void* _entity) {
 static void Jumping_update(void* _entity) {
 
     struct entity* entity = _entity;
-    struct standing_state* state = entity->state;
+    struct jumping_state* state = entity->state;
+
+    Level* level = EntityManager_getLevel();
+
+    SDL_Rect* env = Level_get_surroundings();
+    SDL_Rect hitbox = (SDL_Rect) {.x = entity->position.x, .y = entity->position.y, .w = entity->width, .h = entity->height};
+
+    Vector2D new_position;
+
+    float y_v;
+
+    /* ================================ */
 
     /* After entering the `Jumping` state, the player's vertical velocity is negative, causing the player to move upward.
     The gravitation acting on it increments its velocity. DO NOT FORGET THAT POSITIVE Y GOES DOWNWARD! */
     entity->velocity.y += gravity * Clock_getDelta(m_clock);
 
-    /* Allow the player to move while falling */
-    if (Input_isKey_pressed(SDL_SCANCODE_LEFT)) {
+    new_position = Vector2D_add(&entity->position, &entity->velocity);
+    hitbox.x = new_position.x - 1;
+    hitbox.y = new_position.y;
 
-        entity->velocity.x = -(Clock_getDelta(m_clock) * entity->speed);
+    if (does_rect_collide(hitbox, env[Top]) || does_rect_collide(hitbox, env[TopRight])) {
 
-        if (entity->position.x <= 0) {
-            entity->position.x = 0;
-        }
-    }
-
-    /* ================ */
-
-    /* Allow the player to move while falling */
-    if (Input_isKey_pressed(SDL_SCANCODE_RIGHT)) {
-
-        entity->velocity.x = Clock_getDelta(m_clock) * entity->speed; 
-
-        if (entity->position.x <= 0) {
-            entity->position.x = 0;
-        }
-    }
-
-    /* This one is supposed to check whether there is a platform above the player or not.
-    SPOILER: Doesn't work as intended (AT ALL!) */
-    if (Entity_isPlatformAbove(_entity, EntityManager_getLevel())) {
-
-        entity->position.y = (entity->position.y / TILE_SIZE) + entity->height;
+        entity->position.y -= entity->position.y - ((env[Top].w != 0) ? (env[Top].y + env[Top].h) : (env[TopRight].y + env[TopRight].h));
 
         /* Exit the current state */
         State_destroy(entity->state);
@@ -74,7 +83,64 @@ static void Jumping_update(void* _entity) {
 
         /* The player just hit the platform and immediately stopped. */
         entity->velocity.y = 0;
-        entity->position.y = (entity->level_y + 1) * TILE_SIZE;
+
+        return ;
+    }
+
+    entity->position = new_position;
+
+    /* ================ */
+
+    /* Allow the player to move while Jumping */
+    if (Input_isKey_pressed(SDL_SCANCODE_LEFT)) {
+
+        entity->velocity.x = -Clock_getDelta(m_clock) * entity->speed;
+        y_v = entity->velocity.y;
+        entity->velocity.y = 0;
+
+        new_position = Vector2D_add(&new_position, &entity->velocity);
+        hitbox.x = new_position.x;
+        hitbox.y = new_position.y;
+
+        if (!does_rect_collide(hitbox, env[Left]) && !does_rect_collide(hitbox, env[BottomLeft])) {
+            entity->position = new_position;
+        }
+        else {
+            entity->position.x = (env[Left].w) ? env[Left].x + env[Left].w : env[BottomLeft].x + env[BottomLeft].w;
+        }
+
+        if (entity->position.x <= 0) {
+            entity->position.x = 0;
+        }
+
+        entity->velocity.y = y_v;
+    }
+
+    /* ================ */
+
+    /* Allow the player to move while falling */
+    if (Input_isKey_pressed(SDL_SCANCODE_RIGHT)) {
+
+        entity->velocity.x = Clock_getDelta(m_clock) * entity->speed;
+        y_v = entity->velocity.y;
+        entity->velocity.y = 0;
+
+        new_position = Vector2D_add(&new_position, &entity->velocity);
+        hitbox.x = new_position.x;
+        hitbox.y = new_position.y;
+
+        if (!does_rect_collide(hitbox, env[Right]) && !does_rect_collide(hitbox, env[BottomRight])) {
+            entity->position = new_position;
+        }
+        else {
+            entity->position.x = (env[Right].w) ? env[Right].x - entity->width : env[BottomRight].x - entity->width;
+        }
+
+        if (entity->position.x + entity->width >= SCREEN_WIDTH) {
+            entity->position.x = SCREEN_WIDTH - entity->width;
+        }
+
+        entity->velocity.y = y_v;
     }
 
     /* ================ */
@@ -90,8 +156,6 @@ static void Jumping_update(void* _entity) {
         entity->state = State_create(Falling);
     }
 
-    /* Update the player's position */
-    entity->position = Vector2D_add(&entity->position, &entity->velocity);
     /* Prevent inertia */
     entity->velocity.x = 0;
 }
@@ -109,6 +173,7 @@ static const struct state_class _Jumping = {
 
     .handle = Jumping_handle,
     .update = Jumping_update,
+    .draw = NULL,
 };
 
 const void* Jumping = &_Jumping;

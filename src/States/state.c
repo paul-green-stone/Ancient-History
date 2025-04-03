@@ -62,10 +62,24 @@ void State_update(void* _entity) {
     const struct entity* entity = _entity;
     const struct state_class* const* state = entity->state;
 
-
     if ((_entity != NULL) && (entity != NULL) && (state != NULL) && (*state != NULL)) {
         (*state)->update(_entity);
     }
+}
+
+/* ================================ */
+
+int State_draw(void* _entity) {
+    const struct entity* entity = _entity;
+    const struct state_class* const* state = entity->state;
+
+    if ((_entity != NULL) && (entity != NULL) && (state != NULL) && (*state != NULL) && (*state)->draw != NULL) {
+        (*state)->draw(_entity);
+
+        return 0;
+    }
+
+    return -1;
 }
 
 /* ================================================================ */

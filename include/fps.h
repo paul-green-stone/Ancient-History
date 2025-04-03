@@ -5,6 +5,7 @@
 #define FPS_H
 
 #include <stdint.h>
+#include <SDL2/SDL.h>
 
 typedef struct FPSClock {
     Uint64 last_frame;

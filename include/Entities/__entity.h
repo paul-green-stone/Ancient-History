@@ -7,6 +7,23 @@
 #include "../../framework/include/texture.h"
 #include "../States/States.h"
 
+#define NOT !
+
+/**
+ * Get the row of the entity 
+ */
+#define get_row(ent) (int) (ent)->position.y / TILE_SIZE
+
+/**
+ * Get the column of the entity
+ */
+#define get_column(ent) (int) (ent)->position.x / TILE_SIZE
+
+/**
+ * 
+ */
+#define does_rect_collide(r1, r2) ((r1.x <= r2.x + r2.w) && (r1.x + r1.w >= r2.x) && (r1.y <= r2.y + r2.h) && (r1.y + r1.h >= r2.y))
+
 /* ================================================================ */
 /* ======================= Paul's Addition ======================== */
 /* ================================================================ */

@@ -49,12 +49,27 @@ int Entity_isCollided(const void* self, const void* other);
  * it involves a slightly different mechanism.
  * For more information ask for Brick-Sigma.
  */
-int Entity_isGrounded(const void* entity, Level* level);
+int Entity_isGrounded(const void* entity);
 
 /**
  * 
  */
 int Entity_isPlatformAbove(const void* entity, Level* level);
+
+/**
+ * 
+ */
+int Entity_isPlatformLeft(const void* entity, Level* level);
+
+/**
+ * 
+ */
+int Entity_isPlatformRight(const void* entity, Level* level);
+
+/**
+ * 
+ */
+void Entity_debug(const void* entity);
 
 /* ================================================================ */
 

@@ -67,6 +67,7 @@ static const struct state_class _Ducking = {
 
     .handle = Ducking_handle,
     .update = Ducking_update,
+    .draw = NULL,
 };
 
 const void* Ducking = &_Ducking;

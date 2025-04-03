@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* ================================================================ */
 
@@ -15,6 +16,7 @@ struct state_class {
 
     void (*handle)(void* entity);
     void (*update)(void* entity);
+    int (*draw)(void* entity);
 };
 
 /* ================================================================ */

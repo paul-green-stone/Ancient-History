@@ -8,6 +8,8 @@
 #include "../../include/States/__state_class.h"
 #include "../../include/constants.h"
 
+#include "../../framework/include/io.h"
+
 /* ================================================================ */
 
 void* Entity_create(const void* _entity_type, ...) {
@@ -72,6 +74,10 @@ int Entity_draw(void* _self, SDL_Renderer* context) {
         return -1;
     }
 
+    if (State_draw(_self) == 0) {
+        return status;
+    }
+
     self = _self;
     SDL_Rect rect = { self->position.x, self->position.y, self->width, self->height };
 
@@ -127,27 +133,22 @@ int Entity_isCollided(const void* self, const void* other) {
     r1 = Entity_get_dimensions(self);
     r2 = Entity_get_dimensions(other);
 
-    return ((r1.x < r2.x + r2.w) && (r1.x + r1.w > r2.x) && (r1.y < r2.y + r2.h) && (r1.y + r1.h > r2.y));
+    return does_rect_collide(r1, r2);
 }
 
 /* ================================ */
 
-int Entity_isGrounded(const void* _self, Level* level) {
+int Entity_isGrounded(const void* _self) {
 
     const struct entity* self = _self;
+    SDL_Rect* env = Level_get_surroundings();
 
-    /* Check only the presence of a platform beneath the player */
-    return level->level[(int) (self->position.y + self->height) / TILE_SIZE][self->level_x] > 0;
-}
+    SDL_Rect hitbox = (SDL_Rect) {.x = self->position.x, .y = self->position.y, .w = self->width, .h = self->height};
+    SDL_Rect hitbox_2 = hitbox;
 
-/* ================================ */
+    hitbox_2.x -= 1;
 
-int Entity_isPlatformAbove(const void* _self, Level* level) {
-
-    const struct entity* self = _self;
-
-    /* Check only the presence of a platform above the player */
-    return (level->level[self->level_y][self->level_x] > 0) || (level->level[self->level_y][((int) self->position.x + self->width) / TILE_SIZE] > 0);
-}
+    return does_rect_collide(hitbox, env[Bottom]) || does_rect_collide(hitbox_2, env[BottomRight]);
+ }
 
 /* ================================================================ */

@@ -1,4 +1,8 @@
 #include "Level.h"
+#include "../include/Entities/__entity.h"
+#include "../include/Entities/Manager.h"
+
+static SDL_Rect surroundings[8];
 
 static void __draw(SDL_Renderer* r, SDL_Color* c, int x, int y) {
 
@@ -61,6 +65,157 @@ void Level_debug(const Level* level) {
             }
         }
     }
+}
+
+/* ================================ */
+
+SDL_Rect Level_getPlatform(const Level* level, int row, int column) {
+    return (SDL_Rect) {.x = row * TILE_SIZE, .y = column * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+}
+
+/* ================================ */
+
+int is_point_inside(int x, int y, SDL_Rect* rect) {
+
+    if (rect == NULL) {
+        return 0;
+    }
+
+    return (x >= rect->x && x <= (rect->x + rect->w) && y >= rect->y && y <= (rect->y + rect->h));
+}
+
+/* ================================ */
+
+SDL_Rect* Level_get_surroundings(void) {
+    return &surroundings;
+}
+
+/* ================================ */
+
+void Level_update_surroundings(const void* _entity) {
+
+    const struct entity* entity = _entity;
+    Level* level = EntityManager_getLevel();
+
+    int row, column;
+
+    if (entity == NULL) {
+        return ;
+    }
+
+    row = get_row(entity) - 1;
+    column = get_column(entity) - 1;
+
+    if (level->level[row][column]) {
+        surroundings[TopLeft] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[TopLeft] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+
+    /* ======== */
+
+    row = get_row(entity) - 1;
+    column = get_column(entity);
+
+    if (level->level[row][column]) {
+        surroundings[Top] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[Top] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+
+    /* ======== */
+
+    row = get_row(entity) - 1;
+    column = get_column(entity) + 1;
+
+    if (level->level[row][column]) {
+        surroundings[TopRight] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[TopRight] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+
+    /* ======== */
+
+    row = get_row(entity);
+    column = get_column(entity) + 1;
+
+    if (level->level[row][column]) {
+        surroundings[Right] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[Right] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+    
+    /* ======== */
+
+    row = get_row(entity) + 1;
+    column = get_column(entity) + 1;
+
+    if (level->level[row][column]) {
+        surroundings[BottomRight] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[BottomRight] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+
+    /* ======== */
+
+    row = get_row(entity) + 1;
+    column = get_column(entity);
+
+    if (level->level[row][column]) {
+        surroundings[Bottom] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[Bottom] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+
+    /* ======== */
+
+    row = get_row(entity) + 1;
+    column = get_column(entity) - 1;
+
+    if (level->level[row][column]) {
+        surroundings[BottomLeft] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[BottomLeft] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+
+    /* ======== */
+    
+    row = get_row(entity);
+    column = get_column(entity) - 1;
+
+    if (level->level[row][column]) {
+        surroundings[Left] = (SDL_Rect) {.x = column * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
+    }
+    else {
+        surroundings[Left] = (SDL_Rect) {.x = 0, .y = 0, .w = 0, .h = 0};
+    }
+}
+
+/* ================================ */
+
+void Level_debug_surroundings(const void* _entity) {
+
+    const struct entity* entity = _entity;
+
+    if (entity == NULL) {
+        return ;
+    }
+
+    surroundings[TopLeft].w ? printf("Top Left: [%d, %d]\n", surroundings[TopLeft].x, surroundings[TopLeft].y) : printf("Top Left: Empty\n");
+    surroundings[Top].w ? printf("Top : [%d, %d]\n", surroundings[Top].x, surroundings[Top].y) : printf("Top : Empty\n");
+    surroundings[TopRight].w ? printf("Top Right: [%d, %d]\n", surroundings[TopRight].x, surroundings[TopRight].y) : printf("Top Right: Empty\n");
+    surroundings[Left].w ? printf("Left : [%d, %d]\n", surroundings[Left].x, surroundings[Left].y) : printf("Left : Empty\n");
+    surroundings[Right].w ? printf("Right : [%d, %d]\n", surroundings[Right].x, surroundings[Right].y) : printf("Right : Empty\n");
+    surroundings[BottomRight].w ? printf("Bottom Right : [%d, %d]\n", surroundings[BottomRight].x, surroundings[BottomRight].y) : printf("Right : Empty\n");
+    surroundings[Bottom].w ? printf("Bottom : [%d, %d]\n", surroundings[Bottom].x, surroundings[Bottom].y) : printf("Bottom : Empty\n");
+    surroundings[BottomLeft].w ? printf("Bottom Left : [%d, %d]\n", surroundings[BottomLeft].x, surroundings[BottomLeft].y) : printf("Bottom Left : Empty\n");
 }
 
 /* ================================================================ */

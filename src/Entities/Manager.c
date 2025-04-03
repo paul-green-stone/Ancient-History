@@ -64,7 +64,7 @@ static void _EntityManager_destroy_entity(void* entity) {
 
     if (em.num_entities > 0) {
 
-        if ((em.num_entities == 1) && (entity == em.head)) {
+        if ((em.num_entities == 1) || (entity == em.head)) {
             ent = _EntityManager_delete_first();
         }
         else {
@@ -77,11 +77,12 @@ static void _EntityManager_destroy_entity(void* entity) {
             if (current == em.tail) {
                 em.tail = previous;
             }
+
+            em.num_entities--;
         }
 
         Entity_destroy(ent);
-
-        em.num_entities--;
+        printf("Destroyed\n");
     }
 }
 
@@ -126,8 +127,6 @@ void EntityManager_clear(void) {
 
         ent = _EntityManager_delete_first();
 
-        Vector2D* pos = Entity_get_position(ent);
-
         Entity_destroy(ent);
     }
 
@@ -163,6 +162,11 @@ void EntityManager_process(void) {
 
         ent_class = *(struct entity_class**) ent;
 
+        Level_update_surroundings(ent);
+
+        State_handle(ent);
+        State_update(ent);
+
         if (Entity_isCollided(em.player, ent)) {
 
             if (ent_class == Collectible) {
@@ -176,6 +180,8 @@ void EntityManager_process(void) {
         }
     }
 
+    Level_update_surroundings(em.player);
+    
     State_handle(em.player);
     State_update(em.player);
 }

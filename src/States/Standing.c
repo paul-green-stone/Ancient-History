@@ -3,6 +3,8 @@
 #include "../../include/States/States.h"
 #include "../../include/Entities/__entity_class.h"
 #include "../../include/Entities/__entity.h"
+#include "../../include/Entities/entity.h"
+#include "../../include/Entities/Manager.h"
 #include "../../include/Entities/__player.h"
 
 #include "../../framework/include/clock.h"
@@ -94,14 +96,28 @@ static void Standing_handle(void* _entity) {
 
 static void Standing_update(void* _entity) {
 
+    Level_update_surroundings(_entity);
+
     struct entity* entity = _entity;
     struct standing_state* state = entity->state;
+
+    if (!Entity_isGrounded(_entity)) {
+
+        /* Exit the current state */
+        State_destroy(entity->state);
+        entity->state = NULL;
+
+        /* Enter a new state */
+        entity->state = State_create(Falling);
+        
+        /* Leave the state to not cause a segmentation fault by trying to dereference a NULL pointer */
+        return ;
+    }
 
     if (Clock_isReady(state->clock)) {
         
     }
 
-    entity->position = Vector2D_add(&entity->position, &entity->velocity);
     Clock_update(state->clock);
 }
 
@@ -118,6 +134,7 @@ static const struct state_class _Standing = {
 
     .handle = Standing_handle,
     .update = Standing_update,
+    .draw = NULL,
 };
 
 const void* Standing = &_Standing;

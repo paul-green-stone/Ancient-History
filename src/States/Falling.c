@@ -27,14 +27,29 @@ static void Falling_handle(void* _entity) {
 static void Falling_update(void* _entity) {
 
     struct entity* entity = _entity;
-    struct standing_state* state = entity->state;
+    struct falling_state* state = entity->state;
+
+    Level* level = EntityManager_getLevel();
+
+    SDL_Rect* env = Level_get_surroundings();
+    SDL_Rect hitbox = (SDL_Rect) {.x = entity->position.x, .y = entity->position.y, .w = entity->width, .h = entity->height};
+
+    Vector2D new_position;
+
+    float y_v;
 
     /* Keep updating the entity's velocity.
     When you enter the `Falling` state, its vertical velocity becomes positive, and the player goes down */
     entity->velocity.y += gravity * Clock_getDelta(m_clock);
 
+    new_position = Vector2D_add(&entity->position, &entity->velocity);
+    hitbox.x = new_position.x;
+    hitbox.y = new_position.y;
+
+    entity->position = new_position;
+
     /* The player has landed on the platform or something that can support it */
-    if (Entity_isGrounded(entity, EntityManager_getLevel())) {
+    if (Entity_isGrounded(entity)) {
 
         /* Exit the current state */
         State_destroy(entity->state);
@@ -44,20 +59,32 @@ static void Falling_update(void* _entity) {
         entity->state = State_create(Standing);
         entity->velocity.x = entity->velocity.y = 0;
 
-        /* To adjust the player vertically on the platform after landing */
-        entity->position.y = (entity->level_y * TILE_SIZE) + (TILE_SIZE - entity->height);
+        entity->position.y -= ((int) entity->position.y + entity->height) % TILE_SIZE;
+
+        return ;
     }
 
-    /* ================ */
+    /* ================================ */
 
-    /* Allow the player to move while falling */
     if (Input_isKey_pressed(SDL_SCANCODE_LEFT)) {
 
-        entity->velocity.x = -(Clock_getDelta(m_clock) * entity->speed);
+        entity->velocity.x = -Clock_getDelta(m_clock) * entity->speed;
+        y_v = entity->velocity.y;
+        entity->velocity.y = 0;
+
+        new_position = Vector2D_add(&new_position, &entity->velocity);
+        hitbox.x = new_position.x;
+        hitbox.y = new_position.y;
+
+        if (!does_rect_collide(hitbox, env[Left]) && !does_rect_collide(hitbox, env[BottomLeft])) {
+            entity->position = new_position;
+        }
 
         if (entity->position.x <= 0) {
             entity->position.x = 0;
         }
+
+        entity->velocity.y = y_v;
     }
 
     /* ================ */
@@ -65,15 +92,25 @@ static void Falling_update(void* _entity) {
     /* Allow the player to move while falling */
     if (Input_isKey_pressed(SDL_SCANCODE_RIGHT)) {
 
-        entity->velocity.x = Clock_getDelta(m_clock) * entity->speed; 
+        entity->velocity.x = Clock_getDelta(m_clock) * entity->speed;
+        y_v = entity->velocity.y;
+        entity->velocity.y = 0;
 
-        if (entity->position.x <= 0) {
-            entity->position.x = 0;
+        new_position = Vector2D_add(&new_position, &entity->velocity);
+        hitbox.x = new_position.x;
+        hitbox.y = new_position.y;
+
+        if (!does_rect_collide(hitbox, env[Right]) && !does_rect_collide(hitbox, env[BottomRight])) {
+            entity->position = new_position;
         }
+
+        if (entity->position.x + entity->width >= SCREEN_WIDTH) {
+            entity->position.x = SCREEN_WIDTH - entity->width;
+        }
+
+        entity->velocity.y = y_v;
     }
 
-    /* Update the player's position */
-    entity->position = Vector2D_add(&entity->position, &entity->velocity);
     /* Prevent inertia */
     entity->velocity.x = 0;
 }
@@ -91,6 +128,7 @@ static const struct state_class _Falling = {
 
     .handle = Falling_handle,
     .update = Falling_update,
+    .draw = NULL,
 };
 
 const void* Falling = &_Falling;

@@ -68,6 +68,7 @@ static const struct state_class _Crouching = {
 
     .handle = Crouching_handle,
     .update = Crouching_update,
+    .draw = NULL,
 };
 
 const void* Crouching = &_Crouching;

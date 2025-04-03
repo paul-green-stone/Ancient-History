@@ -2,6 +2,8 @@
 #define CONSTANTS_H
 
 #include "../framework/include/clock.h"
+#include "../framework/include/animation.h"
+#include "../framework/include/texture.h"
 
 #define WIDTH (256)  /* NES Width resolution */
 #define HEIGHT (224) /* NES Height resolution */
@@ -17,5 +19,7 @@
 
 extern Clock* m_clock;
 extern double gravity;
+extern Animation* run;
+extern Texture* run_t;
 
 #endif

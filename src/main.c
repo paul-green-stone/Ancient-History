@@ -11,6 +11,7 @@
 #include "../framework/include/Math/Vector2D.h"
 #include "../framework/include/clock.h"
 #include "../framework/include/io.h"
+#include "../framework/include/animation.h"
 
 #include "Entities/Player.h"
 #include "Entities/Manager.h"
@@ -24,6 +25,8 @@ extern "C"
 
 Clock* m_clock = NULL;
 double gravity = 9.8f;
+Animation* run = NULL;
+Texture* run_t = NULL;
 
 int main(int argc, char **argv) {
 
@@ -31,24 +34,24 @@ int main(int argc, char **argv) {
         .level = {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         }
     };
@@ -57,8 +60,12 @@ int main(int argc, char **argv) {
     Window *window = Window_new("Ancient History", SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_RENDERER_ACCELERATED);
     SDL_Renderer *context = Window_get_context(window);
 
-    /* Create the NES screen canvas for drawing to */
-    RenderTexture screen = RenderTexture_new(context, WIDTH, HEIGHT);
+    run_t = Texture_new(context, "Run.png");
+    if (run_t) { printf("Success!\n"); }
+
+    run = Animation_new(run_t, 0, 0, 6, 42, 42, X);
+    Animation_setSpeed(run, 1.0 / 6);
+    if (run) { printf("Success!\n"); }
 
     /* Create the FPS clock */
     FPSClock clock = FPSClock_new(FPS);
@@ -67,12 +74,16 @@ int main(int argc, char **argv) {
     bool isRunning = true;
 
     //void* ent1 = Entity_create(Entity, &(Vector2D) {2.0, 3.0}, 25, 25, 1, NULL, &(SDL_Color) {0, 0, 0, 255}, 0.0);
-    void* player = Entity_create(Player, &(Vector2D) {4.0, 16.0}, 16, 16, 1, NULL, &(SDL_Color) {0, 255, 0, 255}, 150.0);
+    void* player = Entity_create(Player, &(Vector2D) {4.0, 16.0}, 16, 16, 1, NULL, &(SDL_Color) {255, 0, 0, 255}, 150.0);
 
-    void* en1 = Entity_create(Enemy, &(Vector2D) {6.0, 7.0}, 45, 45, 0.0, 1, NULL, &(SDL_Color) {0, 0, 0, 255}, 0.0);
-    void* c = Entity_create(Collectible, &(Vector2D) {10.0, 11.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 0.0);
-    void* c1 = Entity_create(Collectible, &(Vector2D) {6.0, 13.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 0.0);
-    void* c2 = Entity_create(Collectible, &(Vector2D) {18.0, 9.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 0.0);
+    void* c = Entity_create(Collectible, &(Vector2D) {10.0, 11.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {236, 184, 56, 255}, 0.0);
+    void* c1 = Entity_create(Collectible, &(Vector2D) {6.0, 13.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {236, 184, 56, 255}, 0.0);
+    void* c2 = Entity_create(Collectible, &(Vector2D) {18.0, 9.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {236, 184, 56, 255}, 0.0);
+    void* c3 = Entity_create(Collectible, &(Vector2D) {3.0, 1.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {236, 184, 56, 255}, 0.0);
+
+    void* enemy = Entity_create(Enemy, &(Vector2D) {5.0, 5.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3);
+    void* enemy1 = Entity_create(Enemy, &(Vector2D) {3.0, 1.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3);
+    void* enemy2 = Entity_create(Enemy, &(Vector2D) {20.0, 1.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3);
 
     m_clock = Clock_new();
     Clock_start(m_clock);
@@ -91,17 +102,15 @@ int main(int argc, char **argv) {
 
         Input_update();
 
-        //Player_handle(player);
-
         /* Rendering */
         /* Draw to the screen texture first */
         // setRenderTarget(screen);
-        SDL_SetRenderDrawColor(context, 255, 0, 0, 255);
+        SDL_SetRenderDrawColor(context, 76, 182, 182, 255);
         SDL_RenderClear(context);
 
         Level_draw(context, &level);
 
-        draw_grid(context, &(SDL_Color) {0, 255, 0, 255});
+        draw_grid(context, &(SDL_Color) {255, 255, 255, 255});
 
         //clearRenderTarget(context);
 
@@ -121,9 +130,10 @@ int main(int argc, char **argv) {
         Clock_update(m_clock);
     }
 
-    EntityManager_clear();
+    Animation_destroy(&run);
+    Texture_destroy(&run_t);
 
-    RenderTexture_destroy(screen);
+    EntityManager_clear();
 
     Window_destroy(&window);
     Clock_destroy(&m_clock);
