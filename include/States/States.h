@@ -5,22 +5,46 @@
 /* ================== Player's Different States =================== */
 /* ================================================================ */
 
-/* The player is IDLEing*/
+/**
+ * The player is IDLEing
+ * 
+ * Usage: `State_create(Standing);`
+ */
 extern const void* Standing;
 
-/* The player is running */
+/**
+ * The player is running.
+ * 
+ * Usage: `State_create(Running);`
+ */
 extern const void* Running;
 
-/* The player is ducking */
+/**
+ * The player is ducking.
+ * 
+ * Usage: `State_create(Ducking);`
+ */
 extern const void* Ducking;
 
-/* The player is crouching */
+/**
+ * The player is crouching.
+ * 
+ * Usage: `State_create(Crouching);`
+ */
 extern const void* Crouching;
 
-/* The player is jumping */
+/**
+ * The player is jumping.
+ * 
+ * Usage: `State_create(Jumping);`
+ */
 extern const void* Jumping;
 
-/* Handles player falling — either off the platform or after a jump */
+/*
+ * Handles player falling — either off the platform or after a jump.
+ * 
+ * Usage: `State_create(Falling);`
+ */
 extern const void* Falling;
 
 /* ================================================================ */
@@ -39,10 +63,21 @@ extern const void* Falling;
  */
 extern const void* Patrolling;
 
-/* Resting after patrolling */
+/** 
+ * Resting after patrolling or any other activity.
+ * 
+ * Usage: `State_create(Resting, direction, time);`
+ * 
+ * @param direction direction into which to travel after resting
+ * @param time the time during which the enemy should be in this state
+ */
 extern const void* Resting;
 
-/* Enemy falling state */
+/**
+ * Enemy falling state.
+ * 
+ * Usage: `State_create(EnemyFalling);`
+ */
 extern const void* EnemyFalling;
 
 /* ================================================================ */

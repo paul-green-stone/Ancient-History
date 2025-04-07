@@ -198,26 +198,6 @@ void Level_update_surroundings(const void* _entity) {
     }
 }
 
-/* ================================ */
-
-void Level_debug_surroundings(const void* _entity) {
-
-    const struct entity* entity = _entity;
-
-    if (entity == NULL) {
-        return ;
-    }
-
-    surroundings[TopLeft].w ? printf("Top Left: [%d, %d]\n", surroundings[TopLeft].x, surroundings[TopLeft].y) : printf("Top Left: Empty\n");
-    surroundings[Top].w ? printf("Top : [%d, %d]\n", surroundings[Top].x, surroundings[Top].y) : printf("Top : Empty\n");
-    surroundings[TopRight].w ? printf("Top Right: [%d, %d]\n", surroundings[TopRight].x, surroundings[TopRight].y) : printf("Top Right: Empty\n");
-    surroundings[Left].w ? printf("Left : [%d, %d]\n", surroundings[Left].x, surroundings[Left].y) : printf("Left : Empty\n");
-    surroundings[Right].w ? printf("Right : [%d, %d]\n", surroundings[Right].x, surroundings[Right].y) : printf("Right : Empty\n");
-    surroundings[BottomRight].w ? printf("Bottom Right : [%d, %d]\n", surroundings[BottomRight].x, surroundings[BottomRight].y) : printf("Right : Empty\n");
-    surroundings[Bottom].w ? printf("Bottom : [%d, %d]\n", surroundings[Bottom].x, surroundings[Bottom].y) : printf("Bottom : Empty\n");
-    surroundings[BottomLeft].w ? printf("Bottom Left : [%d, %d]\n", surroundings[BottomLeft].x, surroundings[BottomLeft].y) : printf("Bottom Left : Empty\n");
-}
-
 /* ================================================================ */
 
 double get_length(int x1, int y1, int x2, int y2) {

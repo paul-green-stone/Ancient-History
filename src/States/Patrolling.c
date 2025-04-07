@@ -50,7 +50,7 @@ static void Patrolling_handle(void* _entity) {
     struct entity* entity = _entity;
     struct patrolling_state* state = entity->state;
 
-    SDL_Rect* env = Level_get_surroundings();    
+    //SDL_Rect* env = Level_get_surroundings();    
 }
 
 /* ================================ */
@@ -152,7 +152,7 @@ static void Patrolling_update(void* _entity) {
 
     /* ======== */
 
-    if ((((int) fabs(state->distance_travelled)) / TILE_SIZE) == state->patrolling_distance) {
+    if ((((int) fabs(state->distance_travelled)) / TILE_SIZE) >= state->patrolling_distance) {
 
         old_direction = state->direction;
 
