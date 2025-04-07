@@ -17,6 +17,7 @@ struct standing_state {
     const void* state_class;    /* Must be first */
 
     Clock* clock;
+    Animation* animation;
 };
 
 /* ================================ */
@@ -24,6 +25,8 @@ struct standing_state {
 static void* Standing_ctor(void* _self, va_list* app) {
 
     struct standing_state* self = _self;
+
+    self->animation = idle;
 
     if ((self->clock = Clock_new()) == NULL) {
         return NULL;
@@ -119,6 +122,15 @@ static void Standing_update(void* _entity) {
     }
 
     Clock_update(state->clock);
+    Animation_update(state->animation, Clock_getDelta(m_clock));
+}
+
+static void Standing_draw(void* _entity) {
+
+    struct entity* entity = _entity;
+    struct standing_state* state = entity->state;
+
+    Texture_draw(state->animation->texture, &state->animation->frame, &(SDL_Rect) {.x = entity->position.x, .y = entity->position.y - 16, .w = entity->width * 2, .h = entity->height * 2});
 }
 
 /* ================================================================ */
@@ -134,7 +146,7 @@ static const struct state_class _Standing = {
 
     .handle = Standing_handle,
     .update = Standing_update,
-    .draw = NULL,
+    .draw = Standing_draw,
 };
 
 const void* Standing = &_Standing;

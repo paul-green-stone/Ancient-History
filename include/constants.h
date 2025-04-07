@@ -20,6 +20,7 @@
 extern Clock* m_clock;
 extern double gravity;
 extern Animation* run;
-extern Texture* run_t;
+extern Animation* idle;
+extern Animation* jump;
 
 #endif

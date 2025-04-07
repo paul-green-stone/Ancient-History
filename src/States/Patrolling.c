@@ -3,12 +3,11 @@
 #include "../../include/States/States.h"
 #include "../../include/Entities/__entity_class.h"
 #include "../../include/Entities/__entity.h"
+#include "../../include/Entities/__enemy.h"
 #include "../../include/Entities/entity.h"
 #include "../../include/Entities/Manager.h"
 
 #include "../../framework/include/clock.h"
-
-#include <math.h>
 
 /* ================================================================ */
 
@@ -59,6 +58,8 @@ static void Patrolling_handle(void* _entity) {
 static void Patrolling_update(void* _entity) {
 
     struct entity* entity = _entity;
+    struct enemy* enemy_entity = _entity;
+    struct entity* player = EntityManager_getPlayer();
     struct patrolling_state* state = entity->state;
 
     SDL_Rect* env = Level_get_surroundings();
@@ -67,6 +68,8 @@ static void Patrolling_update(void* _entity) {
     char old_direction;
     int row, column;
 
+    double speed;
+
     /* ================================ */
 
     entity->velocity.x = Clock_getDelta(m_clock) * entity->speed * state->direction;
@@ -74,7 +77,6 @@ static void Patrolling_update(void* _entity) {
 
     /* Keep updating how much distance the entity has traveled */
     state->distance_travelled += Clock_getDelta(m_clock) * entity->speed * state->direction;
-
 
     /* ================================================================ */
     /* ====================== Going To The Right ====================== */
@@ -92,7 +94,7 @@ static void Patrolling_update(void* _entity) {
         entity->state = NULL;
  
         /* Enter a new state */
-        entity->state = State_create(Resting, -old_direction);
+        entity->state = State_create(Resting, -old_direction, 0.5f);
 
         return ;
     }
@@ -107,7 +109,7 @@ static void Patrolling_update(void* _entity) {
         entity->state = NULL;
  
         /* Enter a new state */
-        entity->state = State_create(Resting, -old_direction);
+        entity->state = State_create(Resting, -old_direction, 1.5f);
 
         return ;
     }
@@ -128,7 +130,7 @@ static void Patrolling_update(void* _entity) {
         entity->state = NULL;
  
         /* Enter a new state */
-        entity->state = State_create(Resting, -old_direction);
+        entity->state = State_create(Resting, -old_direction, 0.5f);
 
         return ;
     }
@@ -143,7 +145,7 @@ static void Patrolling_update(void* _entity) {
         entity->state = NULL;
  
         /* Enter a new state */
-        entity->state = State_create(Resting, -old_direction);
+        entity->state = State_create(Resting, -old_direction, 1.5f);
 
         return ;
     }
@@ -159,7 +161,7 @@ static void Patrolling_update(void* _entity) {
         entity->state = NULL;
  
         /* Enter a new state */
-        entity->state = State_create(Resting, old_direction);
+        entity->state = State_create(Resting, old_direction, 1.5f);
 
         return ;
     }

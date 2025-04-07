@@ -31,7 +31,7 @@ static void* Resting_ctor(void* _self, va_list* app) {
         return NULL;
     }
 
-    Clock_setTimer(self->clock, 2.5f);
+    Clock_setTimer(self->clock, va_arg(*app, double));
     Clock_start(self->clock);
 
     return self;

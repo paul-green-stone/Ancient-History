@@ -11,6 +11,7 @@ struct enemy {
     struct entity _;
 
     int patrolling_distance;
+    double range;
 };
 
 /* ================================================================ */

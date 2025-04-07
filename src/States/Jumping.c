@@ -17,7 +17,19 @@ struct jumping_state {
     const void* state_class;    /* Must be first */
 
     /* Here might go variables that control the jump */
+    Animation* animation;
 };
+
+/* ================================ */
+
+static void* Jump_ctor(void* _self, va_list* app) {
+
+    struct jumping_state* self = _self;
+
+    self->animation = jump;
+
+    return self;
+}
 
 /* ================================ */
 
@@ -154,10 +166,24 @@ static void Jumping_update(void* _entity) {
 
         /* Enter a new state */
         entity->state = State_create(Falling);
+
+        return ;
     }
+
+    Animation_update(state->animation, Clock_getDelta(m_clock));
 
     /* Prevent inertia */
     entity->velocity.x = 0;
+}
+
+/* ================================ */
+
+static void Jump_draw(void* _entity) {
+
+    struct entity* entity = _entity;
+    struct jumping_state* state = entity->state;
+
+    Texture_draw(state->animation->texture, &state->animation->frame, &(SDL_Rect) {.x = entity->position.x, .y = entity->position.y - 16, .w = entity->width * 2, .h = entity->height * 2});
 }
 
 /* ================================================================ */
@@ -168,12 +194,12 @@ static const struct state_class _Jumping = {
 
     .size = sizeof(struct jumping_state),
 
-    .ctor = NULL,
+    .ctor = Jump_ctor,
     .dtor = NULL,
 
     .handle = Jumping_handle,
     .update = Jumping_update,
-    .draw = NULL,
+    .draw = Jump_draw,
 };
 
 const void* Jumping = &_Jumping;

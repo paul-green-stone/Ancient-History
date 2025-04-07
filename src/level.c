@@ -219,3 +219,43 @@ void Level_debug_surroundings(const void* _entity) {
 }
 
 /* ================================================================ */
+
+double get_length(int x1, int y1, int x2, int y2) {
+    return sqrt((max(x1, x2) - min(x1, x2)) * (max(x1, x2) - min(x1, x2)) + (max(y1, y2) - min(y1, y2)) * (max(y1, y2) - min(y1, y2)));
+}
+
+/* ================================================================ */
+
+int Level_isThere_obstacle(const void* _entity, double range) {
+
+    const struct entity* entity = _entity;
+    const struct entity* player = EntityManager_getPlayer();
+    Level* level = EntityManager_getLevel();
+
+    /* Number of columns the entity's range covers */
+    int columns = range / TILE_SIZE;
+    /* The entity's origin column */
+    int entity_start_column = get_column(entity);
+    int row = get_row(entity);
+
+    int player_column = get_column(player);
+    int direction;
+
+    /* Determine which direction to check */
+    direction = (entity_start_column < player_column) ? 1 : -1;
+
+    for (int column = entity_start_column; ((direction > 0) ? column <= entity_start_column + columns : column >= entity_start_column + columns); column += direction) {
+
+        if (column == player_column) {
+            return 0;
+        }
+
+        if ((level->level[row][column] > 0) || (level->level[row + 1][column]) == 0) {
+            return 1;
+        }
+    }
+    
+    return 0;
+}
+
+/* ================================================================ */

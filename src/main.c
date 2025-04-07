@@ -26,7 +26,8 @@ extern "C"
 Clock* m_clock = NULL;
 double gravity = 9.8f;
 Animation* run = NULL;
-Texture* run_t = NULL;
+Animation* idle = NULL;
+Animation* jump = NULL;
 
 int main(int argc, char **argv) {
 
@@ -51,7 +52,7 @@ int main(int argc, char **argv) {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         }
     };
@@ -60,12 +61,20 @@ int main(int argc, char **argv) {
     Window *window = Window_new("Ancient History", SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_RENDERER_ACCELERATED);
     SDL_Renderer *context = Window_get_context(window);
 
-    run_t = Texture_new(context, "Run.png");
+    Texture* run_t = Texture_new(context, "Run.png");
     if (run_t) { printf("Success!\n"); }
 
     run = Animation_new(run_t, 0, 0, 6, 42, 42, X);
     Animation_setSpeed(run, 1.0 / 6);
     if (run) { printf("Success!\n"); }
+
+    Texture* idle_t = Texture_new(context, "Idle.png");
+    idle = Animation_new(idle_t, 0, 0, 4, 42, 42, X);
+    Animation_setSpeed(idle, 1.0 / 4);
+
+    Texture* jump_t = Texture_new(context, "Jump.png");
+    jump = Animation_new(jump_t, 0, 0, 8, 42, 42, X);
+    Animation_setSpeed(jump, 1.0 / 8);
 
     /* Create the FPS clock */
     FPSClock clock = FPSClock_new(FPS);
@@ -81,9 +90,9 @@ int main(int argc, char **argv) {
     void* c2 = Entity_create(Collectible, &(Vector2D) {18.0, 9.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {236, 184, 56, 255}, 0.0);
     void* c3 = Entity_create(Collectible, &(Vector2D) {3.0, 1.0}, 10, 10, 0.0, 1, NULL, &(SDL_Color) {236, 184, 56, 255}, 0.0);
 
-    void* enemy = Entity_create(Enemy, &(Vector2D) {5.0, 5.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3);
-    void* enemy1 = Entity_create(Enemy, &(Vector2D) {3.0, 1.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3);
-    void* enemy2 = Entity_create(Enemy, &(Vector2D) {20.0, 1.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3);
+    void* enemy = Entity_create(Enemy, &(Vector2D) {5.0, 5.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3, TILE_SIZE * 3.0);
+    void* enemy1 = Entity_create(Enemy, &(Vector2D) {3.0, 1.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3, TILE_SIZE * 7.0);
+    void* enemy2 = Entity_create(Enemy, &(Vector2D) {20.0, 1.0}, 20, 20, 1, NULL, &(SDL_Color) {0, 0, 255, 255}, 75.0, 3, TILE_SIZE * 3.0);
 
     m_clock = Clock_new();
     Clock_start(m_clock);
@@ -132,6 +141,10 @@ int main(int argc, char **argv) {
 
     Animation_destroy(&run);
     Texture_destroy(&run_t);
+    Animation_destroy(&idle);
+    Texture_destroy(&idle_t);
+    Animation_destroy(&jump);
+    Texture_destroy(&jump_t);
 
     EntityManager_clear();
 

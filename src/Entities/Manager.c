@@ -119,6 +119,12 @@ int EntityManager_setPlayer(const void* player) {
 
 /* ================================ */
 
+void* EntityManager_getPlayer(void) {
+    return em.player;
+}
+
+/* ================================ */
+
 void EntityManager_clear(void) {
 
     struct entity* ent = NULL;
@@ -176,6 +182,9 @@ void EntityManager_process(void) {
                 printf("Collision detected\n");
 
                 _EntityManager_destroy_entity(ent);
+            }
+            else if (ent_class == Enemy) {
+                printf("You got hit by a giat frog!\n");
             }
         }
     }

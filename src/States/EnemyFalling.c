@@ -54,7 +54,7 @@ static void EnemyFalling_update(void* _entity) {
         entity->state = NULL;
 
         /* Enter a new state */
-        entity->state = State_create(Resting, -1);
+        entity->state = State_create(Resting, -1, 0.5f);
         entity->velocity.x = entity->velocity.y = 0;
 
         entity->position.y -= ((int) entity->position.y + entity->height) % TILE_SIZE;

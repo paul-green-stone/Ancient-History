@@ -16,7 +16,7 @@ struct state_class {
 
     void (*handle)(void* entity);
     void (*update)(void* entity);
-    int (*draw)(void* entity);
+    void (*draw)(void* entity);
 };
 
 /* ================================================================ */

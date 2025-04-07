@@ -30,8 +30,6 @@ static void* Running_ctor(void* _self, va_list* app) {
 
     self->animation = run;
     
-    printf("Animation is %d\n", self->animation != NULL);
-
     return self;
 }
 

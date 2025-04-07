@@ -58,6 +58,16 @@ void Level_update_surroundings(const void* entity);
  */
 SDL_Rect* Level_get_surroundings(void);
 
+/**
+ * 
+ */
+double get_length(int x1, int y1, int x2, int y2);
+
+/**
+ * 
+ */
+int Level_isThere_obstacle(const void* entity, double range);
+
 /* ================================================================ */
 
 #endif /* _ANCIENT_HISTORY_LEVEL */

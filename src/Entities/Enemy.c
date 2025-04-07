@@ -20,6 +20,8 @@ static void* Enemy_ctor(void* _self, va_list* app) {
     ((struct entity*) self)->position.y = ((struct entity*) self)->level_y * TILE_SIZE + (TILE_SIZE - ((struct entity*) self)->height) / 2;
 
     self->patrolling_distance = va_arg(*app, int);
+    self->range = va_arg(*app, double);
+    printf("%.2f\n", self->range);
 
     enemy_entity->state = State_create(EnemyFalling);
 

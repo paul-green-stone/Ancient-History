@@ -18,6 +18,11 @@ int EntityManager_setPlayer(const void* player);
 /**
  * 
  */
+void* EntityManager_getPlayer(void);
+
+/**
+ * 
+ */
 void EntityManager_clear(void);
 
 /**
