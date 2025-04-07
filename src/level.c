@@ -87,7 +87,7 @@ int is_point_inside(int x, int y, SDL_Rect* rect) {
 /* ================================ */
 
 SDL_Rect* Level_get_surroundings(void) {
-    return &surroundings;
+    return surroundings;
 }
 
 /* ================================ */
