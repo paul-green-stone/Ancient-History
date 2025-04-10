@@ -1,7 +1,7 @@
 #include <player.h>
 #include <stdlib.h>
 
-Player *createPlayer(int width, int height, int pos_x, int pos_y, int gravity, int terminal_vel) {
+Player *createPlayer(int width, int height, int pos_x, int pos_y) {
     Player *player = (Player *)malloc(sizeof(Player));
     if (player == NULL) {
         perror("ALLOC ERROR : Could not allocate memory for player :");
@@ -14,5 +14,5 @@ Player *createPlayer(int width, int height, int pos_x, int pos_y, int gravity, i
 void drawPlayer(SDL_Renderer *context);
 
 void destroyPlayer(Player *player) {
-    fre(player);
+    free(player);
 }
