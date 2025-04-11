@@ -25,8 +25,8 @@ Level *loadLevel(const char *level_pixel_map, int tile_size)
     level->tile_size = tile_size;
 
     // Setup the initial camera position
-    level->camera_pos[0] = 0;
-    level->camera_pos[1] = 0;
+    // level->camera_pos[0] = 0;
+    // level->camera_pos[1] = 0;
 
     SDL_Surface *temp = IMG_Load(level_pixel_map);
     if (temp == NULL)

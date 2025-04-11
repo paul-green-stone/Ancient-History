@@ -10,9 +10,9 @@ typedef struct Level
 {
     int width;         // Width of entire level (measured in number of tiles)
     int height;        // Height of entire level (measured in number of tiles)
-    int tile_size;     // Size of an individual squar tile side
+    int tile_size;     // Size of an individual square tile side
     uint8_t *map;      // The actual level map data (for a single layer)
-    int camera_pos[2]; // Position of the camera, used for scrolling the screen
+    // int camera_pos[2]; // Position of the camera, used for scrolling the screen
 } Level;
 
 /**
